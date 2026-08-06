@@ -1,0 +1,9 @@
+[build]
+builder = "dockerfile"
+dockerfilePath = "al-manan-frontend/Dockerfile"
+
+[deploy]
+healthcheckPath = "/"
+healthcheckTimeout = 60
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
