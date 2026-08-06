@@ -51,11 +51,9 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Run DB migrations + seed only if a real connection string is configured
+// Run DB migrations + seed if connection string is configured
 var connString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
-var hasDb = !string.IsNullOrWhiteSpace(connString)
-            && !connString.Contains("localhost")   // skip local placeholder
-            || (connString.Contains("localhost") && app.Environment.IsDevelopment());
+var hasDb = !string.IsNullOrWhiteSpace(connString);
 
 if (hasDb)
 {
