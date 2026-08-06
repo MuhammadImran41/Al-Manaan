@@ -13,8 +13,25 @@ public static class ApplicationServicesExtension
         IConfiguration configuration)
     {
         // PostgreSQL Database
+        // Support both Railway DATABASE_URL and explicit connection string
+        var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
+        string connectionString;
+
+        if (!string.IsNullOrEmpty(databaseUrl) && databaseUrl.StartsWith("postgresql://"))
+        {
+            // Convert Railway postgres:// URL to Npgsql format
+            var uri = new Uri(databaseUrl);
+            var userInfo = uri.UserInfo.Split(':');
+            connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.TrimStart('/')};Username={userInfo[0]};Password={userInfo[1]};SSL Mode=Disable";
+        }
+        else
+        {
+            connectionString = configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("No database connection string found.");
+        }
+
         services.AddDbContext<AppDbContext>(options =>
-            options.UseNpgsql(configuration.GetConnectionString("DefaultConnection")));
+            options.UseNpgsql(connectionString));
 
         // Repositories
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
