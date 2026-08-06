@@ -1,0 +1,109 @@
+<!-- =====================================================
+     AL-MANAN CHATBOT WIDGET
+     ===================================================== -->
+
+<!-- Floating Button -->
+<div class="chatbot-fab" (click)="toggleChat()" [class.chatbot-fab--open]="isOpen" aria-label="Chat with us">
+  <div class="chatbot-fab__icon chatbot-fab__icon--chat">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  </div>
+  <div class="chatbot-fab__icon chatbot-fab__icon--close">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </div>
+  <!-- Pulse ring when closed -->
+  <span class="chatbot-fab__pulse" *ngIf="!isOpen"></span>
+</div>
+
+<!-- Chat Panel -->
+<div class="chatbot-panel" [class.chatbot-panel--open]="isOpen">
+
+  <!-- Header -->
+  <div class="chatbot-panel__header">
+    <div class="chatbot-panel__avatar">
+      <img src="assets/images/logo.png" alt="Al-Manan" />
+    </div>
+    <div class="chatbot-panel__info">
+      <span class="chatbot-panel__name">Al-Manan Assistant</span>
+      <span class="chatbot-panel__status">
+        <span class="chatbot-panel__dot"></span> Online — Abhi jawab dega
+      </span>
+    </div>
+    <button class="chatbot-panel__close" (click)="closeChat()" aria-label="Close chat">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div class="chatbot-panel__messages" #messagesContainer>
+    <div *ngFor="let msg of messages"
+         class="chatbot-msg"
+         [class.chatbot-msg--user]="msg.from === 'user'"
+         [class.chatbot-msg--bot]="msg.from === 'bot'">
+
+      <!-- Bot avatar -->
+      <div class="chatbot-msg__avatar" *ngIf="msg.from === 'bot'">
+        <img src="assets/images/logo.png" alt="Bot" />
+      </div>
+
+      <div class="chatbot-msg__body">
+        <div class="chatbot-msg__bubble" [innerHTML]="formatText(msg.text)"></div>
+        <span class="chatbot-msg__time">{{ msg.time }}</span>
+
+        <!-- Quick reply options -->
+        <div class="chatbot-msg__options" *ngIf="msg.options && msg.options.length > 0">
+          <button *ngFor="let opt of msg.options"
+                  class="chatbot-msg__opt-btn"
+                  (click)="onOptionClick(opt)">
+            {{ opt }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Typing indicator -->
+    <div class="chatbot-msg chatbot-msg--bot chatbot-msg--typing" *ngIf="isTyping">
+      <div class="chatbot-msg__avatar">
+        <img src="assets/images/logo.png" alt="Bot" />
+      </div>
+      <div class="chatbot-msg__body">
+        <div class="chatbot-msg__bubble chatbot-msg__bubble--typing">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input -->
+  <div class="chatbot-panel__footer">
+    <div class="chatbot-panel__input-wrap">
+      <input
+        type="text"
+        class="chatbot-panel__input"
+        placeholder="Apna sawal likhein..."
+        [(ngModel)]="userInput"
+        (keydown)="onKeydown($event)"
+        maxlength="200"
+        autocomplete="off"
+      />
+      <button class="chatbot-panel__send"
+              (click)="sendMessage()"
+              [disabled]="!userInput.trim()"
+              aria-label="Send">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+        </svg>
+      </button>
+    </div>
+    <p class="chatbot-panel__powered">Powered by Al-Manan • <a href="https://wa.me/923171656231" target="_blank">WhatsApp</a></p>
+  </div>
+
+</div>
+
+<!-- Backdrop (mobile) -->
+<div class="chatbot-backdrop" [class.chatbot-backdrop--visible]="isOpen" (click)="closeChat()"></div>

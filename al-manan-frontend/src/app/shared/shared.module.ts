@@ -9,6 +9,7 @@ import { ProductCardComponent } from './components/product-card/product-card.com
 import { LoadingSpinnerComponent } from './components/loading-spinner/loading-spinner.component';
 import { ToastComponent } from './components/toast/toast.component';
 import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.component';
+import { ChatbotComponent } from './components/chatbot/chatbot.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
     ProductCardComponent,
     LoadingSpinnerComponent,
     ToastComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    ChatbotComponent
   ],
   imports: [
     CommonModule,
@@ -35,7 +37,8 @@ import { BreadcrumbComponent } from './components/breadcrumb/breadcrumb.componen
     ProductCardComponent,
     LoadingSpinnerComponent,
     ToastComponent,
-    BreadcrumbComponent
+    BreadcrumbComponent,
+    ChatbotComponent
   ]
 })
 export class SharedModule {}
