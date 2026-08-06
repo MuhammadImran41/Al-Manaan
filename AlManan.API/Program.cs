@@ -111,11 +111,7 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
-if (!app.Environment.IsDevelopment())
-{
-    app.UseHttpsRedirection();
-}
-
+// Railway handles HTTPS termination — no redirect needed
 app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
