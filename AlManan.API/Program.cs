@@ -51,9 +51,15 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// Seed database with roles and admin user
-using (var scope = app.Services.CreateScope())
+// Run DB migrations + seed only if a real connection string is configured
+var connString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "";
+var hasDb = !string.IsNullOrWhiteSpace(connString)
+            && !connString.Contains("localhost")   // skip local placeholder
+            || (connString.Contains("localhost") && app.Environment.IsDevelopment());
+
+if (hasDb)
 {
+    using var scope = app.Services.CreateScope();
     var services = scope.ServiceProvider;
     try
     {
@@ -90,14 +96,14 @@ using (var scope = app.Services.CreateScope())
     catch (Exception ex)
     {
         var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "An error occurred during database migration/seeding");
+        logger.LogError(ex, "DB migration/seeding failed — app will still start");
     }
 }
 
-app.UseStaticFiles(); // Serve wwwroot files (logo, etc.)
+app.UseStaticFiles();
 app.UseMiddleware<ExceptionMiddleware>();
 
-// Always show Swagger in development
+// Always show Swagger
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -105,14 +111,17 @@ app.UseSwaggerUI(c =>
     c.RoutePrefix = "swagger";
 });
 
-// Only redirect to HTTPS in production
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();
 }
+
 app.UseCors("AllowAngular");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
+// Health check endpoint for Railway
+app.MapGet("/health", () => Results.Ok(new { status = "healthy", time = DateTime.UtcNow }));
 
 app.Run();
