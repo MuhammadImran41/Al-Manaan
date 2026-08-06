@@ -259,6 +259,22 @@ $text-muted: rgba(255,255,255,0.42);
     img { width: 75%; height: 75%; object-fit: contain; }
   }
 
+  // Icon badge — shown above bubble
+  &__icon-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    background: rgba(184,149,42,0.12);
+    border: 1px solid rgba(184,149,42,0.25);
+    border-radius: 50%;
+    margin-bottom: 4px;
+    padding: 5px;
+
+    svg { display: block; }
+  }
+
   &__body {
     display: flex;
     flex-direction: column;
