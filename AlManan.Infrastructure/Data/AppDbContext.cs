@@ -124,15 +124,16 @@ public class AppDbContext : IdentityDbContext<AppUser>
             .Property(b => b.TotalSpent)
             .HasColumnType("decimal(18,2)");
 
-        // Seed categories
+        // Seed categories — fixed DateTime for stable migrations
+        var seedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
         builder.Entity<Category>().HasData(
-            new Category { Id = 1, Name = "Women's Collection", Slug = "womens-collection", Gender = GenderType.Women, IsActive = true, SortOrder = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-            new Category { Id = 2, Name = "Men's Collection", Slug = "mens-collection", Gender = GenderType.Men, IsActive = true, SortOrder = 2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-            new Category { Id = 3, Name = "Shalwar Kameez", Slug = "shalwar-kameez", Gender = GenderType.Women, ParentCategoryId = 1, IsActive = true, SortOrder = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-            new Category { Id = 4, Name = "Lawn Collection", Slug = "lawn-collection", Gender = GenderType.Women, ParentCategoryId = 1, IsActive = true, SortOrder = 2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-            new Category { Id = 5, Name = "Formal Wear", Slug = "formal-wear", Gender = GenderType.Women, ParentCategoryId = 1, IsActive = true, SortOrder = 3, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-            new Category { Id = 6, Name = "Kurta Shalwar", Slug = "kurta-shalwar", Gender = GenderType.Men, ParentCategoryId = 2, IsActive = true, SortOrder = 1, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow },
-            new Category { Id = 7, Name = "Casual Wear", Slug = "casual-wear", Gender = GenderType.Men, ParentCategoryId = 2, IsActive = true, SortOrder = 2, CreatedAt = DateTime.UtcNow, UpdatedAt = DateTime.UtcNow }
+            new Category { Id = 1, Name = "Women's Collection", Slug = "womens-collection", Gender = GenderType.Women, IsActive = true, SortOrder = 1, CreatedAt = seedDate, UpdatedAt = seedDate },
+            new Category { Id = 2, Name = "Men's Collection", Slug = "mens-collection", Gender = GenderType.Men, IsActive = true, SortOrder = 2, CreatedAt = seedDate, UpdatedAt = seedDate },
+            new Category { Id = 3, Name = "Shalwar Kameez", Slug = "shalwar-kameez", Gender = GenderType.Women, ParentCategoryId = 1, IsActive = true, SortOrder = 1, CreatedAt = seedDate, UpdatedAt = seedDate },
+            new Category { Id = 4, Name = "Lawn Collection", Slug = "lawn-collection", Gender = GenderType.Women, ParentCategoryId = 1, IsActive = true, SortOrder = 2, CreatedAt = seedDate, UpdatedAt = seedDate },
+            new Category { Id = 5, Name = "Formal Wear", Slug = "formal-wear", Gender = GenderType.Women, ParentCategoryId = 1, IsActive = true, SortOrder = 3, CreatedAt = seedDate, UpdatedAt = seedDate },
+            new Category { Id = 6, Name = "Kurta Shalwar", Slug = "kurta-shalwar", Gender = GenderType.Men, ParentCategoryId = 2, IsActive = true, SortOrder = 1, CreatedAt = seedDate, UpdatedAt = seedDate },
+            new Category { Id = 7, Name = "Casual Wear", Slug = "casual-wear", Gender = GenderType.Men, ParentCategoryId = 2, IsActive = true, SortOrder = 2, CreatedAt = seedDate, UpdatedAt = seedDate }
         );
     }
 }
