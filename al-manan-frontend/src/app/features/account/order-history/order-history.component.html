@@ -1,0 +1,52 @@
+﻿<div class="account-page page-enter">
+  <div class="container">
+    <app-breadcrumb [items]="[{ label: 'Home', path: '/' }, { label: 'My Account', path: '/account/profile' }, { label: 'Orders' }]"></app-breadcrumb>
+    <div class="account-layout" style="margin-top: var(--space-xl)">
+      <!-- Sidebar reuse -->
+      <aside class="account-sidebar">
+        <nav class="account-sidebar__nav">
+          <a routerLink="/account/profile" routerLinkActive="active" class="account-sidebar__link">ðŸ‘¤ My Profile</a>
+          <a routerLink="/account/orders" routerLinkActive="active" class="account-sidebar__link">ðŸ“¦ My Orders</a>
+          <a routerLink="/account/wishlist" routerLinkActive="active" class="account-sidebar__link">â¤ï¸ Wishlist</a>
+        </nav>
+      </aside>
+
+      <div>
+        <h2 class="heading-lg" style="margin-bottom: var(--space-xl)">My Orders</h2>
+        <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+        <div *ngIf="!isLoading && orders.length === 0" class="account-card" style="text-align:center; padding: var(--space-4xl)">
+          <p style="font-size:3rem; margin-bottom: var(--space-md)">ðŸ“¦</p>
+          <h3 class="heading-sm">No orders yet</h3>
+          <p class="text-muted" style="margin-bottom: var(--space-xl)">Start shopping to see your orders here.</p>
+          <a routerLink="/shop" class="btn btn--primary">Shop Now</a>
+        </div>
+
+        <div *ngFor="let order of orders" class="account-card" style="margin-bottom: var(--space-lg)">
+          <div style="display:flex; justify-content:space-between; align-items:flex-start; flex-wrap:wrap; gap: var(--space-md); margin-bottom: var(--space-lg)">
+            <div>
+              <p class="caption text-muted">ORDER</p>
+              <p class="heading-sm">{{ order.orderNumber }}</p>
+            </div>
+            <span class="badge" [ngClass]="statusClass(order.status)">{{ order.status }}</span>
+          </div>
+
+          <div *ngFor="let item of order.items" style="display:flex; gap: var(--space-md); padding: var(--space-sm) 0; border-bottom: 1px solid var(--color-border-light); align-items:center">
+            <img [src]="item.productImageUrl || 'assets/images/placeholder.svg'" style="width:56px; height:64px; object-fit:cover; border-radius: var(--radius-sm);" [alt]="item.productName" />
+            <div style="flex:1">
+              <p style="font-size:0.875rem; font-weight:500">{{ item.productName }}</p>
+              <p class="text-muted" style="font-size:0.75rem">{{ item.size }} Â· Qty: {{ item.quantity }}</p>
+            </div>
+            <span class="price price--sm">PKR {{ item.subTotal | number:'1.0-0' }}</span>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; padding-top: var(--space-md); font-size:0.875rem">
+            <span class="text-muted">{{ order.createdAt | date:'mediumDate' }}</span>
+            <strong class="price">Total: PKR {{ order.totalAmount | number:'1.0-0' }}</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

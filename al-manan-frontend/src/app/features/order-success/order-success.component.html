@@ -1,0 +1,91 @@
+<div class="success-page page-enter">
+  <div class="container">
+    <div class="success-card">
+
+      <!-- Animated checkmark -->
+      <div class="success-card__icon">
+        <svg class="success-card__check" xmlns="http://www.w3.org/2000/svg"
+             viewBox="0 0 52 52" fill="none">
+          <circle class="success-card__circle" cx="26" cy="26" r="25"
+                  stroke="#B8952A" stroke-width="2" fill="none"/>
+          <path class="success-card__tick" d="M14 27l8 8 16-18"
+                stroke="#B8952A" stroke-width="2.5"
+                stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        </svg>
+      </div>
+
+      <h1 class="success-card__title">Order Placed!</h1>
+      <p class="success-card__subtitle">
+        Thank you for shopping with <em>Al-Manan</em>
+      </p>
+
+      <!-- Order number badge -->
+      <div class="success-card__order-badge">
+        <span class="success-card__order-label">Your Order Number</span>
+        <span class="success-card__order-number">{{ orderNumber }}</span>
+      </div>
+
+      <!-- Email note -->
+      <div class="success-card__email-note">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+             viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round"
+                d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25
+                   0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25
+                   2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07
+                   1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25
+                   2.25 0 01-1.07-1.916V6.75"/>
+        </svg>
+        <p>
+          A confirmation email with your order receipt has been sent to your email address.
+          <br/>
+          <span style="color:rgba(255,255,255,0.4);font-size:0.8rem">
+            Please check your spam folder if you don't see it within a few minutes.
+          </span>
+        </p>
+      </div>
+
+      <!-- What's next -->
+      <div class="success-card__steps">
+        <div class="success-card__step">
+          <span class="success-card__step-num">1</span>
+          <div>
+            <strong>Order Confirmed</strong>
+            <p>Your order has been received and is being processed</p>
+          </div>
+        </div>
+        <div class="success-card__step">
+          <span class="success-card__step-num">2</span>
+          <div>
+            <strong>Processing</strong>
+            <p>We'll prepare your items within 1-2 business days</p>
+          </div>
+        </div>
+        <div class="success-card__step">
+          <span class="success-card__step-num">3</span>
+          <div>
+            <strong>Delivery</strong>
+            <p>Your order will arrive within 3-5 business days</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="success-card__actions">
+        <button class="btn btn--primary btn--lg" (click)="goShop()">
+          Continue Shopping
+        </button>
+        <button class="btn btn--ghost btn--lg" (click)="goHome()">
+          Back to Home
+        </button>
+      </div>
+
+      <!-- Contact -->
+      <p class="success-card__contact">
+        Questions?
+        <a href="mailto:almananshope&#64;gmail.com">almananshope&#64;gmail.com</a>
+      </p>
+
+    </div>
+  </div>
+</div>

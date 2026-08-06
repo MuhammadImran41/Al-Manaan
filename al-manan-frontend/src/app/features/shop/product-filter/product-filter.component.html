@@ -1,0 +1,57 @@
+<div class="filter-panel" [formGroup]="filterForm">
+
+  <div class="filter-panel__header">
+    <h3 class="filter-panel__title">Filters</h3>
+    <button class="filter-panel__clear" (click)="clearFilters()">Clear All</button>
+  </div>
+
+  <!-- Category -->
+  <div class="filter-section">
+    <h4 class="filter-section__title">Category</h4>
+    <div *ngFor="let cat of parentCategories" class="filter-category">
+      <label class="filter-radio">
+        <input type="radio" formControlName="categoryId" [value]="cat.id" (change)="applyFilters()" />
+        <span>{{ cat.name }}</span>
+      </label>
+      <div class="filter-subcategories" *ngIf="subCategories(cat.id).length">
+        <label *ngFor="let sub of subCategories(cat.id)" class="filter-radio filter-radio--sub">
+          <input type="radio" formControlName="categoryId" [value]="sub.id" (change)="applyFilters()" />
+          <span>{{ sub.name }}</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <!-- Price Range -->
+  <div class="filter-section">
+    <h4 class="filter-section__title">Price Range</h4>
+    <div class="filter-price-ranges">
+      <button
+        *ngFor="let range of priceRanges"
+        class="filter-price-btn"
+        [class.active]="filterForm.value.minPrice === range.min && filterForm.value.maxPrice === (range.max ?? null)"
+        (click)="setPriceRange(range)"
+      >{{ range.label }}</button>
+    </div>
+    <div class="filter-price-inputs">
+      <input type="number" formControlName="minPrice" placeholder="Min PKR" class="form-control form-control--sm" />
+      <span>–</span>
+      <input type="number" formControlName="maxPrice" placeholder="Max PKR" class="form-control form-control--sm" />
+    </div>
+    <button class="btn btn--ghost btn--sm btn--full" (click)="applyFilters()" style="margin-top: var(--space-sm);">Apply Price</button>
+  </div>
+
+  <!-- Size -->
+  <div class="filter-section">
+    <h4 class="filter-section__title">Size</h4>
+    <div class="filter-sizes">
+      <button
+        *ngFor="let size of sizes"
+        class="filter-size-btn"
+        [class.active]="filterForm.value.size === size"
+        (click)="filterForm.patchValue({ size }); applyFilters()"
+      >{{ size }}</button>
+    </div>
+  </div>
+
+</div>

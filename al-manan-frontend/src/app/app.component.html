@@ -1,0 +1,16 @@
+<!-- Public layout: navbar + content + footer -->
+<ng-container *ngIf="!isAdminRoute">
+  <app-navbar></app-navbar>
+  <main class="app-main">
+    <router-outlet></router-outlet>
+  </main>
+  <app-footer></app-footer>
+</ng-container>
+
+<!-- Admin layout: no navbar/footer — handled inside AdminLayoutComponent -->
+<ng-container *ngIf="isAdminRoute">
+  <router-outlet></router-outlet>
+</ng-container>
+
+<!-- Toast always visible -->
+<app-toast></app-toast>

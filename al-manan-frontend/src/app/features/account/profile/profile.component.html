@@ -1,0 +1,56 @@
+<div class="account-page page-enter" *ngIf="user$ | async as user">
+  <div class="container">
+    <app-breadcrumb [items]="[{ label: 'Home', path: '/' }, { label: 'My Account' }]"></app-breadcrumb>
+
+    <div class="account-layout" style="margin-top: var(--space-xl)">
+      <!-- Sidebar -->
+      <aside class="account-sidebar">
+        <div class="account-sidebar__avatar">{{ user.firstName.charAt(0) }}</div>
+        <p class="account-sidebar__name">{{ user.firstName }} {{ user.lastName }}</p>
+        <p class="account-sidebar__email">{{ user.email }}</p>
+
+        <nav class="account-sidebar__nav">
+          <a routerLink="/account/profile" routerLinkActive="active" class="account-sidebar__link">
+            👤 My Profile
+          </a>
+          <a routerLink="/account/orders" routerLinkActive="active" class="account-sidebar__link">
+            📦 My Orders
+          </a>
+          <a routerLink="/account/wishlist" routerLinkActive="active" class="account-sidebar__link">
+            ❤️ Wishlist
+          </a>
+          <button class="account-sidebar__link account-sidebar__link--danger" (click)="logout()">
+            🚪 Sign Out
+          </button>
+        </nav>
+      </aside>
+
+      <!-- Profile card -->
+      <div class="account-card">
+        <h2 class="heading-lg" style="margin-bottom: var(--space-xl)">My Profile</h2>
+
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap: var(--space-lg)">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" class="form-control" [value]="user.firstName" readonly />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" class="form-control" [value]="user.lastName" readonly />
+          </div>
+          <div class="form-group" style="grid-column: 1 / -1">
+            <label class="form-label">Email Address</label>
+            <input type="email" class="form-control" [value]="user.email" readonly />
+          </div>
+        </div>
+
+        <div style="margin-top: var(--space-xl); padding-top: var(--space-xl); border-top: 1px solid var(--color-border-light)">
+          <h3 class="heading-sm" style="margin-bottom: var(--space-md)">Account Roles</h3>
+          <div style="display:flex; gap: var(--space-sm);">
+            <span *ngFor="let role of user.roles" class="badge badge--gold">{{ role }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

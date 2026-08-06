@@ -1,0 +1,204 @@
+﻿<div class="checkout-page page-enter">
+  <div class="container">
+    <app-breadcrumb [items]="[{ label: 'Home', path: '/' }, { label: 'Cart', path: '/cart' }, { label: 'Checkout' }]"></app-breadcrumb>
+    <h1 class="display-md" style="margin-bottom:2rem">Checkout</h1>
+
+    <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+    <div class="checkout-layout" *ngIf="!isLoading && cart" [formGroup]="checkoutForm">
+
+      <!-- Steps -->
+      <div class="checkout-main">
+        <div class="checkout-steps">
+          <div class="checkout-step" [class.active]="step>=1" [class.done]="step>1">
+            <span class="checkout-step__num">1</span><span>Shipping</span>
+          </div>
+          <div class="checkout-step__line"></div>
+          <div class="checkout-step" [class.active]="step>=2" [class.done]="step>2">
+            <span class="checkout-step__num">2</span><span>Payment</span>
+          </div>
+          <div class="checkout-step__line"></div>
+          <div class="checkout-step" [class.active]="step>=3">
+            <span class="checkout-step__num">3</span><span>Review</span>
+          </div>
+        </div>
+
+        <!-- Step 1 — Contact + Shipping -->
+        <div class="checkout-section" *ngIf="step===1">
+          <h2 class="checkout-section__title">Contact & Shipping</h2>
+
+          <!-- Email -->
+          <div class="form-group form-group--full" style="margin-bottom:1.5rem; padding-bottom:1.5rem; border-bottom:1px solid rgba(255,255,255,0.06)">
+            <label class="form-label">Email Address <span style="color:#B8952A">*</span></label>
+            <input type="email" formControlName="email" class="form-control"
+                   [class.is-error]="fieldError('email')"
+                   placeholder="your@email.com — order receipt will be sent here"
+                   autocomplete="email" />
+            <span class="form-error" *ngIf="fieldError('email')">Enter a valid email address</span>
+            <p style="font-size:0.72rem;color:rgba(255,255,255,0.3);margin-top:5px">
+              📧 Order confirmation will be sent to this email
+            </p>
+          </div>
+
+          <div class="form-grid">
+            <div class="form-group">
+              <label class="form-label">Full Name *</label>
+              <input type="text" formControlName="fullName" class="form-control"
+                     [class.is-error]="fieldError('fullName')" placeholder="Your full name" autocomplete="name" />
+              <span class="form-error" *ngIf="fieldError('fullName')">Required</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number *</label>
+              <input type="tel" formControlName="phoneNumber" class="form-control"
+                     [class.is-error]="fieldError('phoneNumber')" placeholder="03XX-XXXXXXX" autocomplete="tel" />
+              <span class="form-error" *ngIf="fieldError('phoneNumber')">Valid Pakistani number required</span>
+            </div>
+            <div class="form-group form-group--full">
+              <label class="form-label">Street Address *</label>
+              <input type="text" formControlName="street" class="form-control"
+                     [class.is-error]="fieldError('street')" placeholder="House no., street, area" autocomplete="street-address" />
+              <span class="form-error" *ngIf="fieldError('street')">Required</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">City *</label>
+              <input type="text" formControlName="city" class="form-control"
+                     [class.is-error]="fieldError('city')" placeholder="City" />
+              <span class="form-error" *ngIf="fieldError('city')">Required</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Province *</label>
+              <select formControlName="province" class="form-control">
+                <option *ngFor="let p of provinces" [value]="p">{{ p }}</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Postal Code *</label>
+              <input type="text" formControlName="postalCode" class="form-control"
+                     [class.is-error]="fieldError('postalCode')" placeholder="e.g. 54000" />
+              <span class="form-error" *ngIf="fieldError('postalCode')">Required</span>
+            </div>
+          </div>
+
+          <div class="form-group" style="margin-top:1rem">
+            <label class="form-label">Order Notes (Optional)</label>
+            <textarea formControlName="notes" class="form-control" rows="2"
+                      placeholder="Any special instructions..."></textarea>
+          </div>
+
+          <button class="btn btn--primary btn--lg" (click)="nextStep()">
+            Continue to Payment →
+          </button>
+        </div>
+
+        <!-- Step 2 — Payment -->
+        <div class="checkout-section" *ngIf="step===2">
+          <h2 class="checkout-section__title">Payment Method</h2>
+          <div class="payment-methods">
+            <label *ngFor="let m of paymentMethods"
+                   class="payment-method"
+                   [class.active]="checkoutForm.get('paymentMethod')?.value===m.value">
+              <input type="radio" formControlName="paymentMethod" [value]="m.value" />
+              <span class="payment-method__icon">{{ m.icon }}</span>
+              <div class="payment-method__info">
+                <strong>{{ m.label }}</strong>
+                <span class="text-muted body-sm">{{ m.desc }}</span>
+              </div>
+            </label>
+          </div>
+          <div class="checkout-step-actions">
+            <button class="btn btn--ghost" (click)="prevStep()">← Back</button>
+            <button class="btn btn--primary btn--lg" (click)="nextStep()">Review Order →</button>
+          </div>
+        </div>
+
+        <!-- Step 3 — Review -->
+        <div class="checkout-section" *ngIf="step===3">
+          <h2 class="checkout-section__title">Review Order</h2>
+
+          <!-- Email confirmation badge -->
+          <div style="background:rgba(184,149,42,0.08);border:1px solid rgba(184,149,42,0.2);
+                      border-radius:10px;padding:12px 16px;margin-bottom:1.5rem;
+                      display:flex;align-items:center;gap:10px;font-size:0.875rem">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+                 viewBox="0 0 24 24" stroke="#B8952A" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                    d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25
+                       0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25
+                       2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07
+                       1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25
+                       2.25 0 01-1.07-1.916V6.75"/>
+            </svg>
+            <span style="color:rgba(255,255,255,0.7)">
+              Receipt will be sent to <strong style="color:#B8952A">{{ checkoutForm.value.email }}</strong>
+            </span>
+          </div>
+
+          <!-- Items -->
+          <div class="checkout-items">
+            <div *ngFor="let item of cart!.items" class="checkout-item">
+              <img [src]="item.productImageUrl || 'assets/images/placeholder.svg'" [alt]="item.productName" />
+              <div class="checkout-item__info">
+                <span class="checkout-item__name">{{ item.productName }}</span>
+                <span class="text-muted body-sm">
+                  {{ item.size }}<span *ngIf="item.color"> · {{ item.color }}</span> · Qty: {{ item.quantity }}
+                </span>
+              </div>
+              <strong class="price">PKR {{ item.subTotal | number:'1.0-0' }}</strong>
+            </div>
+          </div>
+
+          <!-- Address summary -->
+          <div class="checkout-address-summary">
+            <h4>Delivering to:</h4>
+            <p>{{ checkoutForm.value.fullName }}</p>
+            <p class="text-muted">{{ checkoutForm.value.street }}, {{ checkoutForm.value.city }}, {{ checkoutForm.value.province }}</p>
+            <p class="text-muted">{{ checkoutForm.value.phoneNumber }}</p>
+          </div>
+
+          <div class="checkout-step-actions">
+            <button class="btn btn--ghost" (click)="prevStep()">← Back</button>
+            <button class="btn btn--primary btn--lg" (click)="placeOrder()" [disabled]="isPlacingOrder">
+              <svg *ngIf="!isPlacingOrder" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                   fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round"
+                      d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+              </svg>
+              {{ isPlacingOrder ? 'Placing Order...' : 'Place Order' }}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Summary sidebar -->
+      <aside class="checkout-summary">
+        <h3 class="checkout-summary__title">Order Summary</h3>
+        <div class="checkout-summary__items">
+          <div *ngFor="let item of cart!.items" class="checkout-summary__item">
+            <span class="checkout-summary__item-name">{{ item.productName }}</span>
+            <span class="text-muted">× {{ item.quantity }}</span>
+            <span>PKR {{ item.subTotal | number:'1.0-0' }}</span>
+          </div>
+        </div>
+        <div class="checkout-summary__divider"></div>
+        <div class="checkout-summary__line">
+          <span>Subtotal ({{ totalItems }} items)</span>
+          <span>PKR {{ subtotal | number:'1.0-0' }}</span>
+        </div>
+        <div class="checkout-summary__line">
+          <span>Shipping</span>
+          <span [class.text-primary]="shippingCost===0">
+            {{ shippingCost===0 ? 'Free' : 'PKR '+(shippingCost | number:'1.0-0') }}
+          </span>
+        </div>
+        <div class="checkout-summary__divider"></div>
+        <div class="checkout-summary__total">
+          <span>Total</span>
+          <strong>PKR {{ total | number:'1.0-0' }}</strong>
+        </div>
+        <div style="margin-top:1rem;font-size:0.72rem;color:rgba(255,255,255,0.3);text-align:center;line-height:1.6">
+          🔒 Secure checkout &nbsp;·&nbsp; Free delivery over PKR 3,000
+        </div>
+      </aside>
+    </div>
+  </div>
+</div>

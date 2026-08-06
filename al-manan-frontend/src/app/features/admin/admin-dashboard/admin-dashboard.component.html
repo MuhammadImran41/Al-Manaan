@@ -1,0 +1,138 @@
+﻿<div class="admin page-enter">
+  <div class="admin-header">
+    <div>
+      <h1>Dashboard</h1>
+      <p>Welcome back — here's what's happening in your store</p>
+    </div>
+    <a routerLink="/admin/products/new" class="btn btn--primary btn--sm">+ Add Product</a>
+  </div>
+
+  <div>
+
+    <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+    <div *ngIf="!isLoading">
+      <!-- Stats -->
+      <div class="admin-stats">
+        <div class="stat-card">
+          <span class="stat-card__label">Total Orders</span>
+          <span class="stat-card__value">{{ stats.totalOrders }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__label">Revenue</span>
+          <span class="stat-card__value">PKR {{ stats.totalRevenue | number:'1.0-0' }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__label">Products</span>
+          <span class="stat-card__value">{{ stats.totalProducts }}</span>
+        </div>
+        <div class="stat-card">
+          <span class="stat-card__label">Active Sessions</span>
+          <span class="stat-card__value">â€”</span>
+        </div>
+      </div>
+
+      <!-- Recent Orders -->
+      <div class="admin-card">
+        <div class="admin-card__header">
+          <h2 class="admin-card__title">Recent Orders</h2>
+          <a routerLink="/admin/orders" class="btn btn--outline btn--sm">View All</a>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Order #</th>
+                <th>Date</th>
+                <th>Amount</th>
+                <th>Payment</th>
+                <th>Status</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let order of recentOrders">
+                <td><strong>{{ order.orderNumber }}</strong></td>
+                <td class="text-muted">{{ order.createdAt | date:'mediumDate' }}</td>
+                <td><strong class="text-primary">PKR {{ order.totalAmount | number:'1.0-0' }}</strong></td>
+                <td>{{ order.paymentStatus }}</td>
+                <td><span class="badge" [ngClass]="statusClass(order.status)">{{ order.status }}</span></td>
+                <td>
+                  <div class="admin-table__actions">
+                    <a [routerLink]="['/admin/orders', order.id]" class="btn btn--ghost btn--sm">View</a>
+                    <button class="btn btn--delete btn--sm" (click)="deleteOrder(order.id, order.orderNumber)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+              <tr *ngIf="recentOrders.length === 0">
+                <td colspan="6" style="text-align:center; padding: var(--space-2xl); color: var(--color-text-muted)">No orders yet</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Recent Products -->
+      <div class="admin-card">
+        <div class="admin-card__header">
+          <h2 class="admin-card__title">Products</h2>
+          <div style="display:flex; gap: var(--space-sm)">
+            <a routerLink="/admin/products/new" class="btn btn--primary btn--sm">+ Add Product</a>
+            <a routerLink="/admin/products" class="btn btn--outline btn--sm">View All</a>
+          </div>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr>
+                <th>Image</th>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Price</th>
+                <th>Stock</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let product of recentProducts">
+                <td>
+                  <img [src]="product.mainImageUrl || 'assets/images/placeholder.svg'" class="admin-table__img" [alt]="product.name" />
+                </td>
+                <td class="admin-table__name">{{ product.name }}</td>
+                <td class="text-muted">{{ product.categoryName }}</td>
+                <td>
+                  <span *ngIf="product.salePrice" class="text-primary" style="font-weight:600">PKR {{ product.salePrice | number:'1.0-0' }}</span>
+                  <span [class.price--original]="product.salePrice" style="font-size:0.8125rem"> PKR {{ product.price | number:'1.0-0' }}</span>
+                </td>
+                <td>{{ product.stockQuantity }}</td>
+                <td>
+                  <span class="badge" [ngClass]="product.isActive ? 'badge--success' : 'badge--muted'">
+                    {{ product.isActive ? 'Active' : 'Inactive' }}
+                  </span>
+                </td>
+                <td>
+                  <div class="admin-table__actions">
+                    <a [routerLink]="['/admin/products', product.id, 'edit']" class="btn btn--outline btn--sm">Edit</a>
+                    <button class="btn btn--delete btn--sm" (click)="deleteProduct(product.id, product.name)">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                      </svg>
+                      Delete
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+

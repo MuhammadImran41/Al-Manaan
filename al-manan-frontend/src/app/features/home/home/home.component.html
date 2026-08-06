@@ -1,0 +1,315 @@
+<!-- =====================================================
+     HERO — Full-bleed cinematic
+     ===================================================== -->
+<section class="hero">
+  <div class="hero__slides">
+    <div *ngFor="let slide of heroSlides; let i = index"
+         class="hero__slide"
+         [class.hero__slide--active]="i === currentSlide">
+      <img [src]="slide.image" [alt]="slide.titleLine1" class="hero__slide-img" />
+      <div class="hero__slide-overlay"></div>
+    </div>
+  </div>
+
+  <div class="hero__content container">
+    <div class="hero__inner">
+      <p class="hero__eyebrow hero__entrance-1">{{ heroSlides[currentSlide].eyebrow }}</p>
+      <h1 class="hero__title hero__entrance-2">
+        {{ heroSlides[currentSlide].titleLine1 }}<br/>
+        <em>{{ heroSlides[currentSlide].titleLine2 }}</em>
+      </h1>
+      <p class="hero__sub hero__entrance-3">{{ heroSlides[currentSlide].subtitle }}</p>
+      <div class="hero__actions hero__entrance-4">
+        <a [routerLink]="heroSlides[currentSlide].ctaLink"
+           [queryParams]="heroSlides[currentSlide].ctaParams"
+           class="btn btn--primary btn--lg">
+          {{ heroSlides[currentSlide].cta }}
+        </a>
+        <a routerLink="/shop" class="btn btn--white btn--lg">View All</a>
+      </div>
+    </div>
+
+    <div class="hero__indicators">
+      <button *ngFor="let s of heroSlides; let i = index"
+              class="hero__dot"
+              [class.hero__dot--active]="i === currentSlide"
+              (click)="goToSlide(i)"></button>
+    </div>
+
+    <div class="hero__scroll hero__entrance-5">
+      <span class="hero__scroll-label">Scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     MARQUEE
+     ===================================================== -->
+<div class="marquee-strip">
+  <div class="marquee-strip__track">
+    <span *ngFor="let t of marqueeItems">{{ t }} <span class="marquee-strip__dot">✦</span></span>
+    <span *ngFor="let t of marqueeItems">{{ t }} <span class="marquee-strip__dot">✦</span></span>
+  </div>
+</div>
+
+<!-- =====================================================
+     STATEMENT
+     ===================================================== -->
+<section class="statement-section">
+  <div class="container">
+    <div class="statement-inner">
+      <p class="statement-eyebrow" data-aos="fade-up">The Al-Manan Standard</p>
+      <h2 class="statement-heading" data-aos="fade-up" style="--aos-delay:100ms">
+        We didn't set out to make clothes.<br/>
+        <em>We set out to define a feeling.</em>
+      </h2>
+      <div class="gold-divider gold-divider--center" data-aos="fade" style="--aos-delay:200ms"></div>
+      <p class="statement-body" data-aos="fade-up" style="--aos-delay:200ms">
+        Intricate hand-block prints. Rich-dyed fabrics. Generational embroidery skills.
+        Every piece is a testament to the artisans who have perfected their craft over decades —
+        reimagined for those who wear their heritage with pride.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     COLLECTIONS
+     ===================================================== -->
+<section class="collections-section">
+  <div class="collection-panel collection-panel--women"
+       [routerLink]="['/shop']" [queryParams]="{ gender: 'women' }"
+       data-aos="fade-right">
+    <img src="assets/images/1.jpeg" alt="Women's Collection" class="collection-panel__img" />
+    <div class="collection-panel__overlay"></div>
+    <div class="collection-panel__content">
+      <p class="collection-panel__eyebrow">Explore</p>
+      <h2 class="collection-panel__title">Women's<br/><em>Collection</em></h2>
+      <span class="collection-panel__cta">
+        Shop Now
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+        </svg>
+      </span>
+    </div>
+  </div>
+
+  <div class="collection-panel collection-panel--men"
+       [routerLink]="['/shop']" [queryParams]="{ gender: 'men' }"
+       data-aos="fade-left" style="--aos-delay:120ms">
+    <img src="assets/images/2.jpeg" alt="Men's Collection" class="collection-panel__img" />
+    <div class="collection-panel__overlay"></div>
+    <div class="collection-panel__content">
+      <p class="collection-panel__eyebrow">Explore</p>
+      <h2 class="collection-panel__title">Men's<br/><em>Collection</em></h2>
+      <span class="collection-panel__cta">
+        Shop Now
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+        </svg>
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     FEATURED PIECES
+     ===================================================== -->
+<section class="products-section">
+  <div class="container">
+    <div class="products-section__header">
+      <div data-aos="fade-up">
+        <p class="section-eyebrow">Curated For You</p>
+        <h2 class="products-section__title">Featured<br/><em>Pieces</em></h2>
+      </div>
+      <a routerLink="/shop" [queryParams]="{ isFeatured: true }"
+         class="btn btn--outline hide-mobile" data-aos="fade" style="--aos-delay:150ms">
+        View All
+      </a>
+    </div>
+
+    <div class="products-grid" *ngIf="featuredProducts.length > 0; else skelTpl">
+      <div *ngFor="let p of featuredProducts; let i = index"
+           data-aos="fade-up"
+           [style]="'--aos-delay:' + (i * 70) + 'ms'">
+        <app-product-card [product]="p"></app-product-card>
+      </div>
+    </div>
+
+    <ng-template #skelTpl>
+      <div class="products-grid">
+        <div *ngFor="let n of [1,2,3,4]" class="skel-card">
+          <div class="skeleton skel-img"></div>
+          <div class="skeleton skel-line skel-line--lg"></div>
+          <div class="skeleton skel-line skel-line--sm"></div>
+        </div>
+      </div>
+    </ng-template>
+
+    <div class="text-center" style="margin-top:2.5rem" data-aos="fade-up" style="--aos-delay:100ms">
+      <a routerLink="/shop" [queryParams]="{ isFeatured: true }" class="btn btn--outline">Browse All Featured</a>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     STORY — full-bleed, image right side clearly visible
+     ===================================================== -->
+<section class="story-section">
+  <div class="story-section__image-wrap">
+    <img src="assets/images/3.jpeg" alt="Al-Manan Story" class="story-section__img" />
+    <div class="story-section__overlay"></div>
+  </div>
+  <div class="story-section__content container">
+    <div class="story-section__box" data-aos="fade-up">
+      <p class="section-eyebrow">Our Story</p>
+      <h2 class="story-section__title">A Standard,<br/><em>Not a Trend</em></h2>
+      <div class="gold-divider"></div>
+      <p class="story-section__body">
+        "I started Al-Manan to give people the quality I always looked for
+        and rarely found. Not the fastest. Not the cheapest.
+        The best we know how to make."
+      </p>
+      <p class="story-section__author">Al-Manan · Founder</p>
+      <a routerLink="/shop" class="btn btn--primary btn--lg" style="margin-top:2rem">
+        Explore Collection →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     BEST SELLERS
+     ===================================================== -->
+<section class="products-section products-section--dark">
+  <div class="container">
+    <div class="products-section__header products-section__header--center">
+      <p class="section-eyebrow" data-aos="fade-up">Most Loved</p>
+      <h2 class="products-section__title" data-aos="fade-up" style="--aos-delay:80ms">
+        Quietly, the<br/><em>Favourites</em>
+      </h2>
+      <p class="products-section__sub" data-aos="fade-up" style="--aos-delay:160ms">
+        The pieces our customers return for — chosen for feel, finish and the way they wear.
+      </p>
+    </div>
+
+    <div class="products-grid" *ngIf="bestSellers.length > 0">
+      <div *ngFor="let p of bestSellers; let i = index"
+           data-aos="fade-up"
+           [style]="'--aos-delay:' + (i * 70) + 'ms'">
+        <app-product-card [product]="p"></app-product-card>
+      </div>
+    </div>
+
+    <div class="text-center" style="margin-top:2.5rem" data-aos="fade-up">
+      <a routerLink="/shop" [queryParams]="{ isBestSeller: true }" class="btn btn--primary btn--lg">
+        Shop Best Sellers
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     NEW ARRIVALS
+     ===================================================== -->
+<section class="products-section">
+  <div class="container">
+    <div class="products-section__header">
+      <div data-aos="fade-up">
+        <p class="section-eyebrow">Fresh In</p>
+        <h2 class="products-section__title">New<br/><em>Arrivals</em></h2>
+      </div>
+      <a routerLink="/shop" [queryParams]="{ isNew: true }"
+         class="btn btn--outline hide-mobile" data-aos="fade">See All</a>
+    </div>
+    <div class="products-grid products-grid--3" *ngIf="newArrivals.length > 0">
+      <div *ngFor="let p of newArrivals; let i = index"
+           data-aos="fade-up"
+           [style]="'--aos-delay:' + (i * 80) + 'ms'">
+        <app-product-card [product]="p"></app-product-card>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =====================================================
+     NEWSLETTER
+     ===================================================== -->
+<section class="newsletter-section">
+  <div class="newsletter-section__bg">
+    <img src="assets/images/4.jpeg" alt="" class="newsletter-section__bg-img" />
+    <div class="newsletter-section__overlay"></div>
+  </div>
+  <div class="container newsletter-section__content">
+    <p class="section-eyebrow" data-aos="fade-up">Join the House</p>
+    <h2 class="newsletter-section__title" data-aos="fade-up" style="--aos-delay:80ms">
+      First Access.<br/><em>Members Only.</em>
+    </h2>
+    <p class="newsletter-section__sub" data-aos="fade-up" style="--aos-delay:160ms">
+      10% off your first order · Early access to new collections · Members-only releases
+    </p>
+    <form class="newsletter-section__form" (ngSubmit)="subscribeNewsletter()"
+          data-aos="fade-up" style="--aos-delay:220ms">
+      <input type="email" [(ngModel)]="newsletterEmail" name="email"
+             placeholder="Your email address" class="newsletter-section__input" required />
+      <button type="submit" class="btn btn--primary btn--lg">Join Now</button>
+    </form>
+  </div>
+</section>
+
+<!-- =====================================================
+     TRUST STRIP
+     ===================================================== -->
+<section class="trust-strip">
+  <div class="container">
+    <div class="trust-strip__grid">
+      <div class="trust-strip__item" data-aos="fade-up">
+        <div class="trust-strip__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/>
+          </svg>
+        </div>
+        <div>
+          <h4 class="trust-strip__title">Free Delivery</h4>
+          <p class="trust-strip__desc">On orders above PKR 3,000</p>
+        </div>
+      </div>
+      <div class="trust-strip__item" data-aos="fade-up" style="--aos-delay:80ms">
+        <div class="trust-strip__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z"/>
+          </svg>
+        </div>
+        <div>
+          <h4 class="trust-strip__title">Premium Quality</h4>
+          <p class="trust-strip__desc">Finest fabrics, authentic craft</p>
+        </div>
+      </div>
+      <div class="trust-strip__item" data-aos="fade-up" style="--aos-delay:160ms">
+        <div class="trust-strip__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12c0-1.232-.046-2.453-.138-3.662a4.006 4.006 0 00-3.7-3.7 48.678 48.678 0 00-7.324 0 4.006 4.006 0 00-3.7 3.7c-.017.22-.032.441-.046.662M19.5 12l3-3m-3 3l-3-3m-12 3c0 1.232.046 2.453.138 3.662a4.006 4.006 0 003.7 3.7 48.656 48.656 0 007.324 0 4.006 4.006 0 003.7-3.7c.017-.22.032-.441.046-.662M4.5 12l3 3m-3-3l-3 3"/>
+          </svg>
+        </div>
+        <div>
+          <h4 class="trust-strip__title">Easy Returns</h4>
+          <p class="trust-strip__desc">7-day hassle-free policy</p>
+        </div>
+      </div>
+      <div class="trust-strip__item" data-aos="fade-up" style="--aos-delay:240ms">
+        <div class="trust-strip__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+          </svg>
+        </div>
+        <div>
+          <h4 class="trust-strip__title">Secure Payment</h4>
+          <p class="trust-strip__desc">JazzCash · EasyPaisa · Card</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,37 @@
+<div class="account-page page-enter">
+  <div class="container">
+    <app-breadcrumb [items]="[{ label: 'Home', path: '/' }, { label: 'My Account', path: '/account/profile' }, { label: 'Wishlist' }]"></app-breadcrumb>
+    <div class="account-layout" style="margin-top: var(--space-xl)">
+      <aside class="account-sidebar">
+        <nav class="account-sidebar__nav">
+          <a routerLink="/account/profile" routerLinkActive="active" class="account-sidebar__link">👤 My Profile</a>
+          <a routerLink="/account/orders" routerLinkActive="active" class="account-sidebar__link">📦 My Orders</a>
+          <a routerLink="/account/wishlist" routerLinkActive="active" class="account-sidebar__link">❤️ Wishlist</a>
+        </nav>
+      </aside>
+
+      <div>
+        <h2 class="heading-lg" style="margin-bottom: var(--space-xl)">My Wishlist</h2>
+        <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+        <div *ngIf="!isLoading && products.length === 0" class="account-card" style="text-align:center; padding: var(--space-4xl)">
+          <p style="font-size:3rem; margin-bottom: var(--space-md)">❤️</p>
+          <h3 class="heading-sm">Your wishlist is empty</h3>
+          <p class="text-muted" style="margin-bottom: var(--space-xl)">Save your favourite items here.</p>
+          <a routerLink="/shop" class="btn btn--primary">Browse Shop</a>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: var(--space-lg)" *ngIf="!isLoading && products.length > 0">
+          <div *ngFor="let product of products" style="position:relative">
+            <app-product-card [product]="product"></app-product-card>
+            <button
+              (click)="remove(product.id)"
+              style="position:absolute; top:8px; right:8px; background:rgba(255,253,249,0.9); border-radius:50%; width:32px; height:32px; display:flex; align-items:center; justify-content:center; font-size:0.75rem; cursor:pointer"
+              aria-label="Remove from wishlist"
+            >✕</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

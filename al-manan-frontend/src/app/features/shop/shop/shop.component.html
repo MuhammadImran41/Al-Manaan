@@ -1,0 +1,108 @@
+<div class="shop-page page-enter">
+  <!-- Page Header -->
+  <div class="shop-header">
+    <div class="container">
+      <app-breadcrumb [items]="[{ label: 'Home', path: '/' }, { label: pageTitle }]"></app-breadcrumb>
+      <h1 class="display-md shop-header__title">{{ pageTitle }}</h1>
+      <p class="shop-header__count text-muted" *ngIf="!isLoading">
+        {{ totalCount }} {{ totalCount === 1 ? 'product' : 'products' }}
+      </p>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="shop-layout">
+
+      <!-- Filter sidebar (desktop) -->
+      <aside class="shop-sidebar hide-mobile">
+        <app-product-filter
+          [categories]="categories"
+          [currentFilters]="queryParams"
+          (filterApplied)="onFilterApply($event)"
+        ></app-product-filter>
+      </aside>
+
+      <!-- Products area -->
+      <main class="shop-main">
+
+        <!-- Toolbar -->
+        <div class="shop-toolbar">
+          <button class="btn btn--ghost btn--sm hide-desktop" (click)="toggleFilter()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75"/>
+            </svg>
+            Filters
+          </button>
+
+          <div class="shop-toolbar__sort">
+            <label class="body-sm text-muted">Sort by:</label>
+            <select class="form-control shop-toolbar__select" (change)="onSortChange($any($event.target).value)">
+              <option *ngFor="let opt of sortOptions" [value]="opt.value" [selected]="opt.value === queryParams.sortBy">
+                {{ opt.label }}
+              </option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Loading -->
+        <app-loading-spinner *ngIf="isLoading" [text]="'Loading products...'"></app-loading-spinner>
+
+        <!-- Products Grid -->
+        <div class="shop-products-grid" *ngIf="!isLoading">
+          <app-product-card
+            *ngFor="let product of products"
+            [product]="product"
+          ></app-product-card>
+
+          <!-- Empty state -->
+          <div class="shop-empty" *ngIf="products.length === 0">
+            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z"/>
+            </svg>
+            <h3>No products found</h3>
+            <p>Try adjusting your filters or search term.</p>
+            <button class="btn btn--primary" (click)="onFilterApply({})">Clear Filters</button>
+          </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="shop-pagination" *ngIf="totalPages > 1 && !isLoading">
+          <button
+            class="shop-pagination__btn"
+            [disabled]="currentPage === 1"
+            (click)="onPageChange(currentPage - 1)"
+          >←</button>
+
+          <button
+            *ngFor="let p of pages"
+            class="shop-pagination__btn"
+            [class.active]="p === currentPage"
+            (click)="onPageChange(p)"
+          >{{ p }}</button>
+
+          <button
+            class="shop-pagination__btn"
+            [disabled]="currentPage === totalPages"
+            (click)="onPageChange(currentPage + 1)"
+          >→</button>
+        </div>
+      </main>
+    </div>
+  </div>
+</div>
+
+<!-- Mobile filter drawer -->
+<div class="filter-drawer" [class.open]="isFilterOpen">
+  <div class="filter-drawer__header">
+    <h3>Filters</h3>
+    <button class="navbar__icon-btn" (click)="toggleFilter()">✕</button>
+  </div>
+  <div class="filter-drawer__body">
+    <app-product-filter
+      [categories]="categories"
+      [currentFilters]="queryParams"
+      (filterApplied)="onFilterApply($event)"
+    ></app-product-filter>
+  </div>
+</div>
+<div class="overlay" [class.active]="isFilterOpen" (click)="isFilterOpen = false"></div>

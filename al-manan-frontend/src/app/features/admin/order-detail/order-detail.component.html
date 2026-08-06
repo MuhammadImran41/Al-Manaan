@@ -1,0 +1,101 @@
+﻿<div class="admin page-enter">
+  <div class="admin-header">
+    <div>
+      <h1>Order Detail</h1>
+      <p *ngIf="order">{{ order.orderNumber }}</p>
+    </div>
+    <a routerLink="/admin/orders" class="btn btn--ghost btn--sm">← Back to Orders</a>
+  </div>
+
+  <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+  <div style="display:grid;grid-template-columns:1fr 320px;gap:1.5rem;align-items:start"
+    *ngIf="!isLoading && order">
+
+    <!-- Items + address -->
+    <div>
+      <div class="admin-card" style="margin-bottom:1.5rem">
+        <div class="admin-card__header">
+          <h2 class="admin-card__title">Items</h2>
+          <span class="badge" [ngClass]="statusClass(order!.status)">{{ order!.status }}</span>
+        </div>
+        <div class="admin-table-wrap">
+          <table class="admin-table">
+            <thead>
+              <tr><th>Product</th><th>Size</th><th>Qty</th><th>Unit Price</th><th>Total</th></tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of order!.items">
+                <td>
+                  <div style="display:flex;gap:0.75rem;align-items:center">
+                    <img [src]="item.productImageUrl||'assets/images/placeholder.svg'"
+                      class="admin-table__img" [alt]="item.productName" />
+                    {{ item.productName }}
+                  </div>
+                </td>
+                <td>{{ item.size }}</td>
+                <td>{{ item.quantity }}</td>
+                <td>PKR {{ item.unitPrice | number:'1.0-0' }}</td>
+                <td><strong>PKR {{ item.subTotal | number:'1.0-0' }}</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:0.4rem;align-items:flex-end;padding-top:1rem">
+          <div style="display:flex;gap:3rem;font-size:0.875rem">
+            <span class="text-muted">Subtotal</span>
+            <span>PKR {{ order!.subTotal | number:'1.0-0' }}</span>
+          </div>
+          <div style="display:flex;gap:3rem;font-size:0.875rem">
+            <span class="text-muted">Shipping</span>
+            <span>PKR {{ order!.shippingCost | number:'1.0-0' }}</span>
+          </div>
+          <div style="display:flex;gap:3rem;font-size:1rem;font-weight:700">
+            <span>Total</span>
+            <span class="text-primary">PKR {{ order!.totalAmount | number:'1.0-0' }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="admin-card" *ngIf="order!.shippingAddress">
+        <h3 class="admin-card__title" style="margin-bottom:1rem">Shipping Address</h3>
+        <p><strong>{{ order!.shippingAddress.fullName }}</strong></p>
+        <p class="text-muted">{{ order!.shippingAddress.street }}, {{ order!.shippingAddress.city }}</p>
+        <p class="text-muted">{{ order!.shippingAddress.province }} {{ order!.shippingAddress.postalCode }}</p>
+        <p class="text-muted">{{ order!.shippingAddress.phoneNumber }}</p>
+      </div>
+    </div>
+
+    <!-- Update status -->
+    <div class="admin-card">
+      <h3 class="admin-card__title" style="margin-bottom:1.5rem">Update Order</h3>
+      <div class="form-group">
+        <label class="form-label">Order Status</label>
+        <select class="form-control" [(ngModel)]="selectedStatus">
+          <option *ngFor="let s of statusOptions" [value]="s">{{ s }}</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tracking Number</label>
+        <input type="text" class="form-control" [(ngModel)]="trackingNumber" placeholder="Optional" />
+      </div>
+      <button class="btn btn--primary btn--full" (click)="updateStatus()" [disabled]="isUpdating">
+        {{ isUpdating ? 'Updating...' : 'Update Order' }}
+      </button>
+
+      <div style="margin-top:1.5rem;padding-top:1.5rem;border-top:1px solid var(--color-border-light)">
+        <div style="font-size:0.8125rem;display:flex;flex-direction:column;gap:0.5rem">
+          <div style="display:flex;justify-content:space-between">
+            <span class="text-muted">Payment</span><span>{{ order!.paymentStatus }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between">
+            <span class="text-muted">Method</span><span>{{ order!.paymentMethod || '—' }}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between">
+            <span class="text-muted">Date</span><span>{{ order!.createdAt | date:'mediumDate' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,505 @@
+// =====================================================
+// ADMIN LAYOUT — sidebar + topbar + content
+// Completely isolated from the public site layout
+// =====================================================
+
+$sidebar-w:            240px;
+$sidebar-w-collapsed:   68px;
+$topbar-h:              60px;
+$bg-dark:             #0f1117;
+$bg-sidebar:          #13161f;
+$bg-content:          #f4f5f8;
+$gold:                #B8952A;
+$gold-dark:           #8B6914;
+$text-light:          rgba(255,255,255,0.85);
+$text-muted:          rgba(255,255,255,0.4);
+$border-dark:         rgba(255,255,255,0.07);
+$transition:          250ms cubic-bezier(0.4, 0, 0.2, 1);
+
+// ---- Content area text fix ----
+.admin-content {
+  flex: 1;
+  padding: 28px 28px;
+  overflow-x: hidden;
+  background: $bg-content;
+
+  // Override dark theme vars for admin content
+  --color-text:          #1C1A18;
+  --color-text-muted:    #7A6F62;
+  --color-charcoal:      #1C1A18;
+  --color-border:        #DED8CE;
+  --color-border-light:  #EDE8DF;
+  --color-bg-card:       #fff;
+  --color-bg:            #f4f5f8;
+  --color-bg-soft:       #eef0f3;
+  --gold-400:            #B8952A;
+
+  color: #1C1A18;
+
+  @media (max-width: 768px) { padding: 16px; }
+}
+
+// ---- Shell wrapper ----
+.admin-shell {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: $bg-content;
+  font-family: 'Jost', sans-serif;
+  overflow: hidden;
+}
+
+// =====================================================
+// SIDEBAR
+// =====================================================
+.admin-sidebar {
+  width: $sidebar-w;
+  min-height: 100vh;
+  background: $bg-sidebar;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  z-index: 200;
+  transition: width $transition;
+  border-right: 1px solid $border-dark;
+
+  &.collapsed { width: $sidebar-w-collapsed; }
+
+  // Mobile: hidden by default
+  @media (max-width: 1024px) {
+    transform: translateX(-100%);
+    width: $sidebar-w !important;
+    box-shadow: 4px 0 32px rgba(0,0,0,0.4);
+    transition: transform $transition;
+
+    &.mobile-open { transform: translateX(0); }
+  }
+
+  // ---- Logo ----
+  &__logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 18px;
+    height: $topbar-h;
+    border-bottom: 1px solid $border-dark;
+    flex-shrink: 0;
+    overflow: hidden;
+    text-decoration: none;
+  }
+
+  &__logo-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: transparent;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    overflow: hidden;
+  }
+
+  &__logo-text {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+    overflow: hidden;
+    white-space: nowrap;
+    transition: opacity $transition;
+
+    .collapsed & { opacity: 0; pointer-events: none; }
+
+    span:first-child {
+      font-family: 'Cormorant Garamond', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      letter-spacing: 0.2em;
+      color: #fff;
+      line-height: 1;
+    }
+
+    span:last-child {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: $gold;
+      line-height: 1;
+    }
+  }
+
+  // ---- Nav ----
+  &__nav {
+    flex: 1;
+    padding: 12px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    &::-webkit-scrollbar { width: 4px; }
+    &::-webkit-scrollbar-track { background: transparent; }
+    &::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+  }
+
+  &__nav-label {
+    font-size: 0.62rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: $text-muted;
+    padding: 16px 20px 6px;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity $transition;
+
+    .collapsed & { opacity: 0; }
+  }
+
+  &__nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 18px;
+    margin: 2px 8px;
+    border-radius: 10px;
+    color: $text-muted;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background $transition, color $transition;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+
+    &:hover {
+      background: rgba(255,255,255,0.06);
+      color: $text-light;
+    }
+
+    &.active {
+      background: rgba(184,149,42,0.15);
+      color: $gold;
+
+      .admin-sidebar__nav-icon { color: $gold; }
+
+      &::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 20%;
+        bottom: 20%;
+        width: 3px;
+        background: $gold;
+        border-radius: 0 3px 3px 0;
+      }
+    }
+  }
+
+  &__nav-icon {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-muted;
+    transition: color $transition;
+  }
+
+  &__nav-text {
+    font-size: 0.875rem;
+    font-weight: 500;
+    flex: 1;
+    transition: opacity $transition;
+
+    .collapsed & { opacity: 0; pointer-events: none; }
+  }
+
+  &__nav-badge {
+    background: $gold;
+    color: #fff;
+    font-size: 0.65rem;
+    font-weight: 700;
+    padding: 1px 6px;
+    border-radius: 999px;
+    transition: opacity $transition;
+
+    .collapsed & { opacity: 0; }
+  }
+
+  // ---- Tooltip on collapsed ----
+  &__nav-item:hover &__tooltip {
+    opacity: 1;
+    pointer-events: all;
+    transform: translateX(0);
+  }
+
+  &__tooltip {
+    position: absolute;
+    left: calc(#{$sidebar-w-collapsed} + 4px);
+    background: #1e2130;
+    color: #fff;
+    font-size: 0.8125rem;
+    padding: 6px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transform: translateX(-6px);
+    transition: opacity 0.15s, transform 0.15s;
+    z-index: 999;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.3);
+
+    .admin-sidebar:not(.collapsed) & { display: none; }
+  }
+
+  // ---- Divider ----
+  &__divider {
+    height: 1px;
+    background: $border-dark;
+    margin: 8px 16px;
+  }
+
+  // ---- User section (bottom) ----
+  &__user {
+    padding: 12px;
+    border-top: 1px solid $border-dark;
+    flex-shrink: 0;
+  }
+
+  &__user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: background $transition;
+
+    &:hover { background: rgba(255,255,255,0.05); }
+  }
+
+  &__user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $gold-dark, darken($gold-dark, 10%));
+    color: #fff;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    text-transform: uppercase;
+  }
+
+  &__user-details {
+    flex: 1;
+    overflow: hidden;
+    transition: opacity $transition;
+
+    .collapsed & { opacity: 0; width: 0; }
+
+    p:first-child {
+      font-size: 0.8125rem;
+      font-weight: 600;
+      color: $text-light;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    p:last-child {
+      font-size: 0.7rem;
+      color: $gold;
+      white-space: nowrap;
+    }
+  }
+
+  &__logout-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    color: $text-muted;
+    cursor: pointer;
+    transition: all $transition;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+
+    &:hover { background: rgba(239,68,68,0.15); color: #f87171; }
+
+    .collapsed & { display: none; }
+  }
+
+  // ---- Toggle collapse btn ----
+  &__toggle {
+    padding: 8px 12px;
+    border-top: 1px solid $border-dark;
+    flex-shrink: 0;
+
+    button {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 8px;
+      border-radius: 8px;
+      background: none;
+      border: none;
+      color: $text-muted;
+      cursor: pointer;
+      font-size: 0.75rem;
+      letter-spacing: 0.06em;
+      transition: all $transition;
+      white-space: nowrap;
+      overflow: hidden;
+
+      &:hover { background: rgba(255,255,255,0.06); color: $text-light; }
+    }
+  }
+}
+
+// =====================================================
+// MAIN CONTENT AREA
+// =====================================================
+.admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: $sidebar-w;
+  transition: margin-left $transition;
+  min-width: 0;
+
+  &.sidebar-collapsed { margin-left: $sidebar-w-collapsed; }
+
+  @media (max-width: 1024px) {
+    margin-left: 0 !important;
+  }
+}
+
+// ---- Topbar ----
+.admin-topbar {
+  height: $topbar-h;
+  background: #fff;
+  border-bottom: 1px solid #e8e5df;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  flex-shrink: 0;
+
+  &__left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  &__hamburger {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 8px;
+    transition: background $transition;
+
+    &:hover { background: #f4f5f8; }
+
+    span {
+      display: block;
+      width: 18px;
+      height: 1.5px;
+      background: #1C1A18;
+      border-radius: 2px;
+    }
+  }
+
+  &__breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.8125rem;
+
+    span { color: #7A6F62; }
+    strong { color: #1C1A18; font-weight: 600; }
+
+    @media (max-width: 480px) { display: none; }
+  }
+
+  &__right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__icon-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #7A6F62;
+    cursor: pointer;
+    background: none;
+    border: none;
+    transition: all $transition;
+
+    &:hover { background: #f4f5f8; color: #1C1A18; }
+  }
+
+  &__store-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 0 14px;
+    height: 36px;
+    border-radius: 8px;
+    background: #f4f5f8;
+    border: 1.5px solid #DED8CE;
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #2D2A26;
+    text-decoration: none;
+    transition: all $transition;
+
+    &:hover { background: #EDE8DF; border-color: #C8C0B0; }
+  }
+}
+
+// ---- Page content ----
+.admin-content {
+  flex: 1;
+  padding: 28px 28px;
+  overflow-x: hidden;
+
+  @media (max-width: 768px) { padding: 16px; }
+}
+
+// ---- Mobile overlay ----
+.admin-mobile-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  z-index: 150;
+
+  &.active {
+    @media (max-width: 1024px) { display: block; }
+  }
+}

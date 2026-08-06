@@ -1,0 +1,11 @@
+.app-main {
+  min-height: 100vh;
+  // Offset for floating navbar on all non-hero pages
+  padding-top: 72px;
+
+  @media (max-width: 768px) { padding-top: 58px; }
+  @media (max-width: 480px) { padding-top: 54px; }
+}
+
+// Home page — hero handles its own offset (margin-top: -72px)
+// So padding-top is overridden by the hero's negative margin
