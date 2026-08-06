@@ -1,0 +1,9 @@
+[build]
+  base = "al-manan-frontend"
+  command = "npm run build -- --configuration=production"
+  publish = "dist/al-manan-frontend/browser"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

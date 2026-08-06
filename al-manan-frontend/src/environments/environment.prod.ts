@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://api.almanan.com/api'
+  apiUrl: 'https://al-manaan-production.up.railway.app/api'
 };
