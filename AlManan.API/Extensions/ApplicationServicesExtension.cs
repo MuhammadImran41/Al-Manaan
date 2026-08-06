@@ -31,12 +31,15 @@ public static class ApplicationServicesExtension
         // AutoMapper
         services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
-        // CORS
+        // CORS — allow Angular frontend (local + Railway/Vercel deployed)
         services.AddCors(options =>
         {
             options.AddPolicy("AllowAngular", policy =>
             {
-                policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                var allowedOrigins = configuration["AllowedOrigins"]?.Split(",")
+                    ?? new[] { "http://localhost:4200", "https://localhost:4200" };
+
+                policy.WithOrigins(allowedOrigins)
                       .AllowAnyHeader()
                       .AllowAnyMethod()
                       .AllowCredentials();

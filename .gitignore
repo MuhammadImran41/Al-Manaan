@@ -14,7 +14,7 @@ obj/
 *.suo
 .vs/
 
-# Environment / secrets
+# Environment / secrets — DO NOT COMMIT
 appsettings.Development.json
 appsettings.Production.json
 *.env

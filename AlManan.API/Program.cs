@@ -5,7 +5,14 @@ using AlManan.Infrastructure.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-var builder = WebApplication.CreateBuilder(args);
+// Railway injects PORT env var — bind to it
+var port = Environment.GetEnvironmentVariable("PORT") ?? "8080";
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    WebRootPath = "wwwroot"
+});
+builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
 
 // Register application services
 builder.Services.AddApplicationServices(builder.Configuration);
