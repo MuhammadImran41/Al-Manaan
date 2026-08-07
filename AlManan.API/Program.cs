@@ -126,8 +126,8 @@ app.MapGet("/test-email", async (AlManan.Core.Interfaces.IEmailService emailServ
         await emailService.SendOrderReceiptAsync(new AlManan.Core.Interfaces.OrderEmailData
         {
             OrderNumber   = "TEST-001",
-            CustomerName  = "Test Customer",
-            CustomerEmail = "almananshop@gmail.com",
+            CustomerName  = "Muhammad Imran",
+            CustomerEmail = "mimranofficial236@gmail.com",
             CustomerPhone = "03171656231",
             OrderDate     = DateTime.UtcNow,
             PaymentMethod = "Cash on Delivery",
@@ -144,8 +144,8 @@ app.MapGet("/test-email", async (AlManan.Core.Interfaces.IEmailService emailServ
         await emailService.SendAdminOrderNotificationAsync(new AlManan.Core.Interfaces.OrderEmailData
         {
             OrderNumber   = "TEST-001",
-            CustomerName  = "Test Customer",
-            CustomerEmail = "almananshop@gmail.com",
+            CustomerName  = "Muhammad Imran",
+            CustomerEmail = "mimranofficial236@gmail.com",
             CustomerPhone = "03171656231",
             OrderDate     = DateTime.UtcNow,
             PaymentMethod = "Cash on Delivery",
