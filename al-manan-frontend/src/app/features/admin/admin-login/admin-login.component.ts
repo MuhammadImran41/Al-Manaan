@@ -40,7 +40,8 @@ export class AdminLoginComponent implements OnInit {
 
     this.authService.login(this.form.value).subscribe({
       next: user => {
-        if (user.roles?.includes('Admin')) {
+        const roles = Array.isArray(user.roles) ? user.roles : [user.roles];
+        if (roles.some((r: any) => r === 'Admin')) {
           this.router.navigateByUrl('/admin');
         } else {
           this.authService.logout();

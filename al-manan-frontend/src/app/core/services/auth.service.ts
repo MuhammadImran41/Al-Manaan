@@ -35,7 +35,13 @@ export class AuthService {
 
   login(request: LoginRequest): Observable<User> {
     return this.http.post<User>(`${this.baseUrl}/login`, request).pipe(
-      tap(user => this.setCurrentUser(user))
+      tap(user => {
+        // Normalize roles — API may return string or array
+        if (user.roles && !Array.isArray(user.roles)) {
+          user.roles = [user.roles as any];
+        }
+        this.setCurrentUser(user);
+      })
     );
   }
 

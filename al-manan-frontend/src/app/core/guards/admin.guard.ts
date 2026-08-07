@@ -7,12 +7,12 @@ export class AdminGuard implements CanActivate {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): boolean | UrlTree {
-    // Not logged in → go to admin login page
     if (!this.authService.isLoggedIn) {
       return this.router.createUrlTree(['/admin/login']);
     }
-    // Logged in but not admin → go to admin login page
-    if (!this.authService.isAdmin) {
+    const user = this.authService.currentUser;
+    const roles = Array.isArray(user?.roles) ? user.roles : [user?.roles];
+    if (!roles.some((r: any) => r === 'Admin')) {
       this.authService.logout();
       return this.router.createUrlTree(['/admin/login']);
     }
