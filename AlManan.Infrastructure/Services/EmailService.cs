@@ -80,7 +80,8 @@ public class EmailService : IEmailService
             message.Body     = builder.ToMessageBody();
 
             using var client = new SmtpClient();
-            await client.ConnectAsync("smtp.gmail.com", 587, SecureSocketOptions.StartTls);
+            client.Timeout = 15000; // 15 second timeout
+            await client.ConnectAsync("smtp.gmail.com", 465, SecureSocketOptions.SslOnConnect);
             await client.AuthenticateAsync(fromEmail, password);
             await client.SendAsync(message);
             await client.DisconnectAsync(true);
