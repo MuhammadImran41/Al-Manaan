@@ -40,7 +40,7 @@ public class EmailService : IEmailService
 
     private async Task SendAsync(string toEmail, string toName, string subject, OrderEmailData data, bool isAdmin)
     {
-        var apiKey = _config["Resend:ApiKey"] ?? string.Empty;
+        var apiKey = _config["Resend:ApiKey"] ?? _config["Resend__ApiKey"] ?? string.Empty;
 
         if (string.IsNullOrWhiteSpace(apiKey))
         {

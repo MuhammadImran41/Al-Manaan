@@ -159,12 +159,19 @@ app.MapGet("/test-email", async (AlManan.Core.Interfaces.IEmailService emailServ
             }
         });
 
-        return Results.Ok(new { success = true, message = "Both emails sent — check almananshop@gmail.com inbox AND spam" });
+        return Results.Ok(new { success = true, message = "Both emails sent — check mimranofficial236@gmail.com AND almananshop@gmail.com" });
     }
     catch (Exception ex)
     {
-        return Results.Ok(new { success = false, error = ex.Message, stack = ex.InnerException?.Message });
+        return Results.Ok(new { success = false, error = ex.Message, inner = ex.InnerException?.Message });
     }
 });
+
+// Debug config endpoint
+app.MapGet("/debug-config", (IConfiguration config) => Results.Ok(new {
+    resendKey    = string.IsNullOrEmpty(config["Resend:ApiKey"]) ? "NOT SET" : "SET (" + config["Resend:ApiKey"]!.Length + " chars)",
+    emailFrom    = config["Email:From"] ?? "NOT SET",
+    emailAdmin   = config["Email:AdminEmail"] ?? "NOT SET",
+}));
 
 app.Run();
