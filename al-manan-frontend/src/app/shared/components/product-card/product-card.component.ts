@@ -57,4 +57,10 @@ export class ProductCardComponent implements AfterViewInit {
   navigateToProduct(): void {
     this.router.navigate(['/product', this.product.slug]);
   }
+
+  onImgError(event: Event): void {
+    const img = event.target as HTMLImageElement;
+    img.src = 'assets/images/placeholder.svg';
+    img.removeAttribute('crossorigin');
+  }
 }
