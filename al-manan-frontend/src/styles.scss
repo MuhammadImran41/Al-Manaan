@@ -659,3 +659,13 @@ h1, h2, h3, h4, h5, h6 {
 [data-aos][data-aos-duration="fast"]   { transition-duration: 0.45s; }
 [data-aos][data-aos-duration="slow"]   { transition-duration: 1.1s; }
 [data-aos][data-aos-duration="slower"] { transition-duration: 1.4s; }
+
+// =====================================================
+// AOS OVERRIDE — force all animated elements visible
+// (AOS library not initialized — prevent opacity:0 stuck)
+// =====================================================
+[data-aos] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
