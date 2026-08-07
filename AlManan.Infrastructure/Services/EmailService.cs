@@ -131,11 +131,12 @@ public class EmailService : IEmailService
 
   <tr><td style='background:linear-gradient(160deg,#1C1A18 0%,#2d2822 100%);padding:44px 40px 36px;text-align:center;'>
     <div style='width:80px;height:80px;border-radius:16px;overflow:hidden;
-                display:inline-block;margin-bottom:16px;
+                display:inline-block;margin:0 auto 16px;
+                background:linear-gradient(135deg,#B8952A,#7A5F12);
                 box-shadow:0 8px 24px rgba(184,149,42,0.5);'>
       <img src='https://raw.githubusercontent.com/MuhammadImran41/Al-Manaan/main/al-manan-frontend/src/assets/images/logo.png'
-           alt='Al-Manan' width='80' height='80'
-           style='display:block;width:80px;height:80px;object-fit:cover;border-radius:16px;' />
+           alt='AM' width='80' height='80'
+           style='display:block;width:80px;height:80px;object-fit:cover;' />
     </div>
     <div style='font-family:Georgia,serif;font-size:20px;letter-spacing:0.28em;color:#fff;text-transform:uppercase;margin-bottom:4px;'>AL-MANAN</div>
     <div style='font-size:10px;font-weight:700;letter-spacing:0.22em;text-transform:uppercase;color:#B8952A;margin-bottom:24px;'>Premium Fashion</div>
