@@ -66,15 +66,15 @@ export class HomeComponent implements OnInit, OnDestroy {
   private loadData(): void {
     this.productService.getFeatured(8).subscribe({
       next: p => (this.featuredProducts = p),
-      error: () => {}
+      error: (e) => console.error('Featured error:', e)
     });
     this.productService.getBestSellers(8).subscribe({
       next: p => (this.bestSellers = p),
-      error: () => {}
+      error: (e) => console.error('BestSellers error:', e)
     });
     this.productService.getNewArrivals(6).subscribe({
       next: p => { this.newArrivals = p; this.isLoading = false; },
-      error: () => (this.isLoading = false)
+      error: (e) => { console.error('NewArrivals error:', e); this.isLoading = false; }
     });
   }
 
