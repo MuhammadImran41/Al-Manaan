@@ -204,17 +204,16 @@ public class EmailService : IEmailService
 
     <div style='background:linear-gradient(160deg,#1C1A18,#2d2822);border-radius:14px;padding:22px 28px;text-align:center;'>
       <div style='font-family:Georgia,serif;font-size:17px;font-weight:300;color:#fff;margin-bottom:8px;'>
-        Thank you for shopping with <em style='color:#D4A843;'>Al-Manan</em>
+        {(isAdmin ? "Order successfully received — please process." : $"Thank you for shopping with <em style='color:#D4A843;'>Al-Manan</em>")}
       </div>
       <div style='font-size:12px;color:rgba(255,255,255,0.4);'>
-        Questions? <a href='mailto:almananshop@gmail.com' style='color:#B8952A;text-decoration:none;'>almananshop@gmail.com</a>
+        {(isAdmin ? "Login to admin panel to manage orders." : $"Questions? <a href='mailto:almananshop@gmail.com' style='color:#B8952A;text-decoration:none;'>almananshop@gmail.com</a>")}
       </div>
     </div>
   </td></tr>
 
-  <tr><td style='background:#f4f1ec;padding:20px 40px;text-align:center;'>
-    <div style='font-size:10px;color:#b0a898;letter-spacing:0.1em;text-transform:uppercase;margin-bottom:5px;'>Al-Manan · Premium Pakistani Fashion</div>
-    <div style='font-size:11px;color:#c5bdb3;'>Free delivery above PKR 3,000 &nbsp;✦&nbsp; Easy 7-day returns</div>
+  <tr><td style='background:#f4f1ec;padding:16px 40px;text-align:center;'>
+    <div style='font-size:10px;color:#b0a898;letter-spacing:0.1em;text-transform:uppercase;'>Al-Manan · Premium Pakistani Fashion</div>
   </td></tr>
 
 </table>
