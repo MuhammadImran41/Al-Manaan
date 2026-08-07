@@ -118,4 +118,34 @@ app.MapControllers();
 // Health check endpoint for Railway
 app.MapGet("/health", () => Results.Ok(new { status = "healthy", time = DateTime.UtcNow }));
 
+// Email test endpoint — remove after testing
+app.MapGet("/test-email", async (AlManan.Core.Interfaces.IEmailService emailService) =>
+{
+    try
+    {
+        await emailService.SendOrderReceiptAsync(new AlManan.Core.Interfaces.OrderEmailData
+        {
+            OrderNumber  = "TEST-001",
+            CustomerName = "Test Customer",
+            CustomerEmail = "almananshop@gmail.com",
+            CustomerPhone = "03171656231",
+            OrderDate    = DateTime.UtcNow,
+            PaymentMethod = "Cash on Delivery",
+            ShippingAddress = "123 Test Street, Lahore",
+            SubTotal     = 4500,
+            ShippingCost = 200,
+            Total        = 4700,
+            Items = new List<AlManan.Core.Interfaces.OrderEmailItem>
+            {
+                new() { Name = "Embroidered Lawn Suit", Size = "M", Quantity = 1, SubTotal = 4500 }
+            }
+        });
+        return Results.Ok(new { success = true, message = "Test email sent to almananshop@gmail.com" });
+    }
+    catch (Exception ex)
+    {
+        return Results.Ok(new { success = false, error = ex.Message });
+    }
+});
+
 app.Run();
