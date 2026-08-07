@@ -83,8 +83,8 @@ public class GuestOrdersController : BaseApiController
         // Upsert buyer profile
         await UpsertBuyerProfile(req, order.TotalAmount);
 
-        // Send emails (fire & forget)
-        _ = SendEmailsAsync(order, req);
+        // Send emails — await properly
+        await SendEmailsAsync(order, req);
 
         return Ok(new
         {
@@ -167,7 +167,11 @@ public class GuestOrdersController : BaseApiController
 
             await _emailService.SendAdminOrderNotificationAsync(emailData);
         }
-        catch { /* silent */ }
+        catch (Exception ex)
+        {
+            // Log but don't fail the order
+            Console.WriteLine($"Email error: {ex.Message}");
+        }
     }
 }
 

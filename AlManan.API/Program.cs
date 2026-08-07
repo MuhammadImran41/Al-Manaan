@@ -125,26 +125,45 @@ app.MapGet("/test-email", async (AlManan.Core.Interfaces.IEmailService emailServ
     {
         await emailService.SendOrderReceiptAsync(new AlManan.Core.Interfaces.OrderEmailData
         {
-            OrderNumber  = "TEST-001",
-            CustomerName = "Test Customer",
+            OrderNumber   = "TEST-001",
+            CustomerName  = "Test Customer",
             CustomerEmail = "almananshop@gmail.com",
             CustomerPhone = "03171656231",
-            OrderDate    = DateTime.UtcNow,
+            OrderDate     = DateTime.UtcNow,
             PaymentMethod = "Cash on Delivery",
             ShippingAddress = "123 Test Street, Lahore",
-            SubTotal     = 4500,
-            ShippingCost = 200,
-            Total        = 4700,
+            SubTotal      = 4500,
+            ShippingCost  = 200,
+            Total         = 4700,
             Items = new List<AlManan.Core.Interfaces.OrderEmailItem>
             {
                 new() { Name = "Embroidered Lawn Suit", Size = "M", Quantity = 1, SubTotal = 4500 }
             }
         });
-        return Results.Ok(new { success = true, message = "Test email sent to almananshop@gmail.com" });
+
+        await emailService.SendAdminOrderNotificationAsync(new AlManan.Core.Interfaces.OrderEmailData
+        {
+            OrderNumber   = "TEST-001",
+            CustomerName  = "Test Customer",
+            CustomerEmail = "almananshop@gmail.com",
+            CustomerPhone = "03171656231",
+            OrderDate     = DateTime.UtcNow,
+            PaymentMethod = "Cash on Delivery",
+            ShippingAddress = "123 Test Street, Lahore",
+            SubTotal      = 4500,
+            ShippingCost  = 200,
+            Total         = 4700,
+            Items = new List<AlManan.Core.Interfaces.OrderEmailItem>
+            {
+                new() { Name = "Embroidered Lawn Suit", Size = "M", Quantity = 1, SubTotal = 4500 }
+            }
+        });
+
+        return Results.Ok(new { success = true, message = "Both emails sent — check almananshop@gmail.com inbox AND spam" });
     }
     catch (Exception ex)
     {
-        return Results.Ok(new { success = false, error = ex.Message });
+        return Results.Ok(new { success = false, error = ex.Message, stack = ex.InnerException?.Message });
     }
 });
 
