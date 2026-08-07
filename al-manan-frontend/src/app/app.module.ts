@@ -8,9 +8,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { ErrorInterceptor } from './core/interceptors/error.interceptor';
+import { JwtInterceptor } from './core/interceptors/jwt.interceptor';
 import { OrderSuccessComponent } from './features/order-success/order-success.component';
-
-// JWT interceptor removed from public store — admin panel handles its own auth
 
 @NgModule({
   declarations: [AppComponent, OrderSuccessComponent],
@@ -24,7 +23,7 @@ import { OrderSuccessComponent } from './features/order-success/order-success.co
     SharedModule
   ],
   providers: [
-    // Only error interceptor for public store
+    { provide: HTTP_INTERCEPTORS, useClass: JwtInterceptor, multi: true },
     { provide: HTTP_INTERCEPTORS, useClass: ErrorInterceptor, multi: true }
   ],
   bootstrap: [AppComponent]
