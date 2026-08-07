@@ -33,7 +33,7 @@ public class EmailService : IEmailService
 
     public async Task SendAdminOrderNotificationAsync(OrderEmailData data)
     {
-        var adminEmail = _config["Email:AdminEmail"] ?? "almananshope@gmail.com";
+        var adminEmail = _config["Email:AdminEmail"] ?? "almananshop@gmail.com";
         var subject    = $"New Order {data.OrderNumber} — PKR {data.Total:N0}";
         await SendEmailAsync(adminEmail, "Al-Manan Admin", subject, data, isAdmin: true);
     }
@@ -42,7 +42,7 @@ public class EmailService : IEmailService
         string toEmail, string toName,
         string subject, OrderEmailData data, bool isAdmin)
     {
-        var fromEmail = _config["Email:From"]     ?? "almananshope@gmail.com";
+        var fromEmail = _config["Email:From"]     ?? "almananshop@gmail.com";
         var password  = _config["Email:Password"] ?? string.Empty;
 
         if (string.IsNullOrEmpty(password))
@@ -257,8 +257,8 @@ public class EmailService : IEmailService
         Thank you for shopping with <em style='color:#D4A843;'>Al-Manan</em>
       </div>
       <div style='font-size:12px;color:rgba(255,255,255,0.4);'>
-        Questions? <a href='mailto:almananshope@gmail.com'
-                      style='color:#B8952A;text-decoration:none;'>almananshope@gmail.com</a>
+        Questions? <a href='mailto:almananshop@gmail.com'
+                      style='color:#B8952A;text-decoration:none;'>almananshop@gmail.com</a>
       </div>
     </div>
 
