@@ -169,9 +169,10 @@ app.MapGet("/test-email", async (AlManan.Core.Interfaces.IEmailService emailServ
 
 // Debug config endpoint
 app.MapGet("/debug-config", (IConfiguration config) => Results.Ok(new {
-    resendKey    = string.IsNullOrEmpty(config["Resend:ApiKey"]) ? "NOT SET" : "SET (" + config["Resend:ApiKey"]!.Length + " chars)",
+    resendKey    = string.IsNullOrEmpty(Environment.GetEnvironmentVariable("Resend__ApiKey") ?? config["Resend:ApiKey"]) ? "NOT SET" : "SET (" + (Environment.GetEnvironmentVariable("Resend__ApiKey") ?? config["Resend:ApiKey"])!.Length + " chars)",
     emailFrom    = config["Email:From"] ?? "NOT SET",
     emailAdmin   = config["Email:AdminEmail"] ?? "NOT SET",
+    allEnvKeys   = Environment.GetEnvironmentVariables().Keys.Cast<string>().Where(k => k.StartsWith("Resend") || k.StartsWith("Email")).ToList()
 }));
 
 app.Run();
