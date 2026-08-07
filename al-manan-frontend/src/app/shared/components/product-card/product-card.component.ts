@@ -60,7 +60,8 @@ export class ProductCardComponent implements AfterViewInit {
 
   onImgError(event: Event): void {
     const img = event.target as HTMLImageElement;
-    img.src = 'assets/images/placeholder.svg';
-    img.removeAttribute('crossorigin');
+    if (!img.src.includes('placeholder')) {
+      img.src = 'assets/images/placeholder.svg';
+    }
   }
 }
