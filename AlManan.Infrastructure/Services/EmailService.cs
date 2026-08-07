@@ -58,6 +58,8 @@ public class EmailService : IEmailService
             message.To.Add(new MailboxAddress(toName, toEmail));
             message.Subject = subject;
 
+            _logger.LogInformation("Sending email to {Email} from {From}", toEmail, fromEmail);
+
             // Build multipart/related body with inline logo
             var builder  = new BodyBuilder();
             var logoCid  = MimeUtils.GenerateMessageId();
