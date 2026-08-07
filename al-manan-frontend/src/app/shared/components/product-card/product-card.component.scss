@@ -1,5 +1,5 @@
 // =====================================================
-// PRODUCT CARD — Mobile Responsive
+// PRODUCT CARD — Mobile Responsive + Button Alignment
 // =====================================================
 .product-card {
   background: var(--color-bg-card);
@@ -7,6 +7,8 @@
   overflow: hidden;
   cursor: pointer;
   transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column; // card = full column flex
 
   &:hover {
     border-color: rgba(184,149,42,0.28);
@@ -17,6 +19,7 @@
 
   &__image-wrap {
     position: relative; overflow: hidden; aspect-ratio: 3/4;
+    flex-shrink: 0;
   }
 
   &__image {
@@ -37,7 +40,6 @@
     padding: 10px; gap: 6px; opacity: 0;
     transition: opacity 0.3s ease; z-index: 3;
     background: linear-gradient(to top, rgba(0,0,0,0.55) 0%, transparent 50%);
-    // Touch devices — always show
     @media (max-width: 768px) { opacity: 1; }
   }
 
@@ -61,11 +63,15 @@
     @media (max-width: 480px) { font-size: 0.58rem; padding: 0.45rem 0.5rem; }
   }
 
+  // Info section grows to fill remaining height — pushes button to bottom
   &__info {
-    padding: 10px 10px 12px;
-    display: flex; flex-direction: column; gap: 4px;
+    padding: 10px 10px 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
     background: var(--color-bg-card);
-    @media (max-width: 480px) { padding: 8px 8px 10px; gap: 3px; }
+    flex: 1; // takes remaining space
+    @media (max-width: 480px) { padding: 8px 8px 0; gap: 3px; }
   }
 
   &__category {
@@ -90,10 +96,38 @@
     display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; margin-top: 2px;
   }
 
-  &__sizes { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px; }
+  &__sizes {
+    display: flex; flex-wrap: wrap; gap: 4px; margin-top: 3px;
+    flex: 1; // spacer — pushes btn to bottom
+    align-content: flex-start;
+  }
+
   &__size-tag {
     font-size: 0.58rem; font-weight: 600; color: rgba(255,255,255,0.28);
     border: 1px solid rgba(255,255,255,0.1); padding: 2px 5px;
     @media (max-width: 480px) { font-size: 0.52rem; padding: 1px 4px; }
+  }
+
+  // Bottom Add to Cart button — always at bottom
+  &__add-btn {
+    margin-top: auto;
+    width: 100%;
+    padding: 0.65rem 1rem;
+    background: transparent;
+    border: 1px solid rgba(184,149,42,0.3);
+    border-top: 1px solid rgba(184,149,42,0.15);
+    font-size: 0.65rem; font-weight: 700;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+    cursor: pointer; font-family: var(--font-body);
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+
+    &:hover {
+      background: var(--gold-400);
+      border-color: var(--gold-400);
+      color: #000;
+    }
+
+    @media (max-width: 480px) { padding: 0.55rem 0.75rem; font-size: 0.6rem; }
   }
 }

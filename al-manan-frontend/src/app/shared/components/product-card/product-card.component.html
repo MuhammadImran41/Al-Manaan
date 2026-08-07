@@ -76,5 +76,13 @@
     </div>
   </div>
 
+  <!-- Bottom CTA — always aligned at bottom -->
+  <button class="product-card__add-btn"
+          (click)="addToCart($event)"
+          [class.loading]="isAddingToCart">
+    <span *ngIf="!isAddingToCart">Add to Cart</span>
+    <span *ngIf="isAddingToCart">Adding...</span>
+  </button>
+
 </article>
 
