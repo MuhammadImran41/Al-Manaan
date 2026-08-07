@@ -15,18 +15,24 @@ public class PhotoService : IPhotoService
 
     public PhotoService(IConfiguration config)
     {
-        var account = new Account(
-            config["Cloudinary:CloudName"],
-            config["Cloudinary:ApiKey"],
-            config["Cloudinary:ApiSecret"]
-        );
-        _cloudinary = new Cloudinary(account);
+        var cloudName = config["Cloudinary:CloudName"];
+        var apiKey = config["Cloudinary:ApiKey"];
+        var apiSecret = config["Cloudinary:ApiSecret"];
+
+        // Cloudinary is optional — if not configured, service still starts
+        if (!string.IsNullOrWhiteSpace(cloudName) &&
+            !string.IsNullOrWhiteSpace(apiKey) &&
+            !string.IsNullOrWhiteSpace(apiSecret))
+        {
+            var account = new Account(cloudName, apiKey, apiSecret);
+            _cloudinary = new Cloudinary(account);
+        }
     }
 
     public async Task<PhotoUploadResult> UploadPhotoAsync(IFormFile file, string folder = "al-manan/products")
     {
-        if (file == null || file.Length == 0)
-            return new PhotoUploadResult { Success = false, Error = "No file provided" };
+        if (_cloudinary == null)
+            return new PhotoUploadResult { Success = false, Error = "Cloudinary not configured" };
 
         await using var stream = file.OpenReadStream();
 
