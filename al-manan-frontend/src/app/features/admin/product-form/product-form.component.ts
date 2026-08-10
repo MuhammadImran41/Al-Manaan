@@ -24,11 +24,13 @@ export class ProductFormComponent implements OnInit {
   imagePreview:  string | null = null;
   imageMode:  'url' | 'upload' = 'url';
   isUploading  = false;
+  uploadProgress  = 0;
 
   // Image 2
   imagePreview2: string | null = null;
   image2Mode: 'url' | 'upload' = 'url';
   isUploading2 = false;
+  uploadProgress2 = 0;
 
   constructor(
     private fb: FormBuilder,
@@ -122,20 +124,39 @@ export class ProductFormComponent implements OnInit {
       this.toastService.error('File too large — max 5MB');
       return;
     }
-    if (slot === 1) this.isUploading  = true;
-    else            this.isUploading2 = true;
+
+    if (slot === 1) { this.isUploading = true;  this.uploadProgress  = 0; }
+    else            { this.isUploading2 = true; this.uploadProgress2 = 0; }
+
+    // Simulate progress while reading file
+    const progressInterval = setInterval(() => {
+      if (slot === 1) {
+        if (this.uploadProgress  < 90) this.uploadProgress  += 10;
+      } else {
+        if (this.uploadProgress2 < 90) this.uploadProgress2 += 10;
+      }
+    }, 80);
 
     const reader = new FileReader();
     reader.onload = (e) => {
+      clearInterval(progressInterval);
       const dataUrl = e.target?.result as string;
       if (slot === 1) {
-        this.imagePreview  = dataUrl;
-        this.form.get('imageUrl')?.setValue(dataUrl);
-        this.isUploading  = false;
+        this.uploadProgress  = 100;
+        setTimeout(() => {
+          this.imagePreview  = dataUrl;
+          this.form.get('imageUrl')?.setValue(dataUrl);
+          this.isUploading   = false;
+          this.uploadProgress = 0;
+        }, 300);
       } else {
-        this.imagePreview2 = dataUrl;
-        this.form.get('imageUrl2')?.setValue(dataUrl);
-        this.isUploading2 = false;
+        this.uploadProgress2 = 100;
+        setTimeout(() => {
+          this.imagePreview2 = dataUrl;
+          this.form.get('imageUrl2')?.setValue(dataUrl);
+          this.isUploading2  = false;
+          this.uploadProgress2 = 0;
+        }, 300);
       }
     };
     reader.readAsDataURL(file);
