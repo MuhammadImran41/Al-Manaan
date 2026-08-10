@@ -19,16 +19,49 @@
           <span class="stat-card__value">{{ stats.totalOrders }}</span>
         </div>
         <div class="stat-card">
-          <span class="stat-card__label">Revenue</span>
+          <span class="stat-card__label">Revenue (Recent)</span>
           <span class="stat-card__value">PKR {{ stats.totalRevenue | number:'1.0-0' }}</span>
         </div>
         <div class="stat-card">
           <span class="stat-card__label">Products</span>
           <span class="stat-card__value">{{ stats.totalProducts }}</span>
         </div>
-        <div class="stat-card">
-          <span class="stat-card__label">Active Sessions</span>
-          <span class="stat-card__value">1</span>
+        <div class="stat-card" [style.borderLeft]="stats.lowStock > 0 ? '3px solid #E67E22' : ''">
+          <span class="stat-card__label">Low Stock</span>
+          <span class="stat-card__value" [style.color]="stats.lowStock > 0 ? '#E67E22' : '#27AE60'">
+            {{ stats.lowStock }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div style="display:flex;gap:0.75rem;flex-wrap:wrap;margin-bottom:1.5rem">
+        <a routerLink="/admin/products/new" class="btn btn--primary btn--sm">+ Add Product</a>
+        <a routerLink="/admin/orders" class="btn btn--outline btn--sm">View Orders</a>
+        <a routerLink="/admin/inventory" class="btn btn--outline btn--sm">Check Inventory</a>
+        <a routerLink="/admin/payments" class="btn btn--outline btn--sm">Payments</a>
+        <a routerLink="/admin/buyers" class="btn btn--outline btn--sm">Buyer Profiles</a>
+      </div>
+
+      <!-- Weekly Revenue Chart -->
+      <div class="admin-card" style="margin-bottom:1.25rem" *ngIf="weeklyData.length > 0">
+        <div class="admin-card__header">
+          <h2 class="admin-card__title">This Week — Revenue</h2>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:0.5rem;height:120px;padding:0 0.5rem">
+          <div *ngFor="let d of weeklyData"
+               style="flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;height:100%">
+            <span style="font-size:0.6rem;color:#7A6F62">
+              {{ d.revenue > 0 ? (d.revenue | number:'1.0-0') : '' }}
+            </span>
+            <div style="flex:1;width:100%;display:flex;align-items:flex-end">
+              <div [style.height.%]="d.pct || 2"
+                   style="width:100%;background:linear-gradient(to top,#B8952A,#D4A843);
+                          border-radius:4px 4px 0 0;min-height:3px;transition:height 0.4s ease">
+              </div>
+            </div>
+            <span style="font-size:0.68rem;font-weight:600;color:#7A6F62">{{ d.day }}</span>
+          </div>
         </div>
       </div>
 

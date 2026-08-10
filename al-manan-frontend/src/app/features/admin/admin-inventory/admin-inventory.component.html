@@ -1,0 +1,136 @@
+<div class="admin page-enter">
+  <div class="admin-header">
+    <div>
+      <h1>Inventory</h1>
+      <p>Monitor stock levels and get low stock alerts</p>
+    </div>
+    <a routerLink="/admin/products/new" class="btn btn--primary btn--sm">+ Add Product</a>
+  </div>
+
+  <!-- Stats -->
+  <div class="admin-stats" style="margin-bottom:1.5rem">
+    <div class="stat-card">
+      <span class="stat-card__label">Total Products</span>
+      <span class="stat-card__value">{{ totalProducts }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">In Stock</span>
+      <span class="stat-card__value" style="color:#27AE60">{{ inStockCount }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">Low Stock</span>
+      <span class="stat-card__value" style="color:#E67E22">{{ lowStockCount }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">Out of Stock</span>
+      <span class="stat-card__value" style="color:#C0392B">{{ outOfStockCount }}</span>
+    </div>
+  </div>
+
+  <!-- Low Stock Alert Banner -->
+  <div *ngIf="lowStockItems.length > 0"
+       style="background:#FFF8E6;border:1px solid #F0C040;border-radius:10px;
+              padding:1rem 1.25rem;margin-bottom:1.25rem;
+              display:flex;align-items:center;gap:0.75rem">
+    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none"
+         viewBox="0 0 24 24" stroke="#E67E22" stroke-width="2" style="flex-shrink:0">
+      <path stroke-linecap="round" stroke-linejoin="round"
+            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948
+               3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949
+               4.88c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/>
+    </svg>
+    <p style="font-size:0.875rem;color:#92400E;margin:0">
+      <strong>{{ lowStockItems.length }} products</strong> are running low on stock — restock soon!
+    </p>
+  </div>
+
+  <!-- Filter Tabs -->
+  <div style="display:flex;gap:0.375rem;margin-bottom:1rem;flex-wrap:wrap">
+    <button class="btn btn--sm" [class.btn--primary]="filter==='all'"
+            [class.btn--ghost]="filter!=='all'" (click)="filter='all'">
+      All ({{ totalProducts }})
+    </button>
+    <button class="btn btn--sm" [class.btn--primary]="filter==='low'"
+            [class.btn--ghost]="filter!=='low'" (click)="filter='low'"
+            style="position:relative">
+      Low Stock ({{ lowStockCount }})
+      <span *ngIf="lowStockCount > 0"
+            style="position:absolute;top:-6px;right:-6px;background:#E67E22;
+                   color:#fff;border-radius:50%;width:16px;height:16px;
+                   font-size:0.6rem;display:flex;align-items:center;justify-content:center">
+        {{ lowStockCount }}
+      </span>
+    </button>
+    <button class="btn btn--sm" [class.btn--primary]="filter==='out'"
+            [class.btn--ghost]="filter!=='out'" (click)="filter='out'">
+      Out of Stock ({{ outOfStockCount }})
+    </button>
+  </div>
+
+  <div class="admin-card">
+    <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+    <div class="admin-table-wrap" *ngIf="!isLoading">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Category</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of filteredProducts"
+              [style.background]="p.stockQuantity === 0 ? '#FFF5F5' :
+                                  p.stockQuantity <= 5 ? '#FFFBF0' : 'transparent'">
+            <td>
+              <div style="display:flex;align-items:center;gap:0.625rem">
+                <img [src]="p.mainImageUrl || 'assets/images/placeholder.svg'"
+                     style="width:36px;height:44px;object-fit:cover;border-radius:4px" />
+                <strong style="font-size:0.8375rem">{{ p.name }}</strong>
+              </div>
+            </td>
+            <td class="text-muted">{{ p.categoryName }}</td>
+            <td>
+              <div style="display:flex;align-items:center;gap:0.5rem">
+                <span style="font-weight:700;font-size:1rem"
+                      [style.color]="p.stockQuantity === 0 ? '#C0392B' :
+                                     p.stockQuantity <= 5 ? '#E67E22' : '#27AE60'">
+                  {{ p.stockQuantity }}
+                </span>
+                <!-- Mini stock bar -->
+                <div style="width:60px;height:6px;background:#EDE8DF;border-radius:99px;overflow:hidden">
+                  <div [style.width.%]="stockBarWidth(p.stockQuantity)"
+                       [style.background]="p.stockQuantity === 0 ? '#C0392B' :
+                                           p.stockQuantity <= 5 ? '#E67E22' : '#27AE60'"
+                       style="height:100%;border-radius:99px;transition:width 0.3s"></div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="badge"
+                    [class.badge--red]="p.stockQuantity === 0"
+                    [class.badge--gold]="p.stockQuantity > 0 && p.stockQuantity <= 5"
+                    [class.badge--success]="p.stockQuantity > 5">
+                {{ p.stockQuantity === 0 ? 'Out of Stock' :
+                   p.stockQuantity <= 5 ? 'Low Stock' : 'In Stock' }}
+              </span>
+            </td>
+            <td>PKR {{ (p.salePrice || p.price) | number:'1.0-0' }}</td>
+            <td>
+              <a [routerLink]="['/admin/products', p.id, 'edit']"
+                 class="btn btn--outline btn--sm">Edit</a>
+            </td>
+          </tr>
+          <tr *ngIf="filteredProducts.length === 0">
+            <td colspan="6" style="text-align:center;padding:3rem;color:#B0A899">
+              No products found
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

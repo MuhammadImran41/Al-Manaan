@@ -1,0 +1,105 @@
+<div class="admin page-enter">
+  <div class="admin-header">
+    <div>
+      <h1>Payments</h1>
+      <p>Track all transactions and payment status</p>
+    </div>
+  </div>
+
+  <!-- Stats -->
+  <div class="admin-stats" style="margin-bottom:1.5rem">
+    <div class="stat-card">
+      <span class="stat-card__label">Total Revenue</span>
+      <span class="stat-card__value">PKR {{ totalRevenue | number:'1.0-0' }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">Total Orders</span>
+      <span class="stat-card__value">{{ totalOrders }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">Paid</span>
+      <span class="stat-card__value" style="color:#27AE60">{{ paidCount }}</span>
+    </div>
+    <div class="stat-card">
+      <span class="stat-card__label">Pending</span>
+      <span class="stat-card__value" style="color:#B8952A">{{ pendingCount }}</span>
+    </div>
+  </div>
+
+  <div class="admin-card">
+    <div class="admin-card__header">
+      <h2 class="admin-card__title">Transactions ({{ filteredPayments.length }})</h2>
+      <!-- Filters -->
+      <div style="display:flex;gap:0.5rem;flex-wrap:wrap">
+        <select class="form-control" style="width:auto;padding:0.4rem 0.75rem;font-size:0.8rem"
+                [(ngModel)]="filterStatus">
+          <option value="all">All Status</option>
+          <option value="paid">Paid</option>
+          <option value="pending">Pending</option>
+          <option value="failed">Failed</option>
+          <option value="refunded">Refunded</option>
+        </select>
+        <select class="form-control" style="width:auto;padding:0.4rem 0.75rem;font-size:0.8rem"
+                [(ngModel)]="filterMethod">
+          <option value="all">All Methods</option>
+          <option value="cod">COD</option>
+          <option value="jazz">JazzCash</option>
+          <option value="easy">EasyPaisa</option>
+          <option value="card">Card</option>
+        </select>
+      </div>
+    </div>
+
+    <app-loading-spinner *ngIf="isLoading"></app-loading-spinner>
+
+    <div class="admin-table-wrap" *ngIf="!isLoading">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>Order #</th>
+            <th>Customer</th>
+            <th>Amount</th>
+            <th>Method</th>
+            <th>Status</th>
+            <th>Date</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let p of filteredPayments">
+            <td><strong>{{ p.orderNumber }}</strong></td>
+            <td class="text-muted">{{ p.customerName }}</td>
+            <td><strong class="text-primary">PKR {{ p.amount | number:'1.0-0' }}</strong></td>
+            <td>
+              <span style="display:inline-flex;align-items:center;gap:5px;
+                           background:#F5F1EA;padding:3px 10px;border-radius:99px;
+                           font-size:0.72rem;font-weight:600;color:#1C1A18">
+                {{ methodIcon(p.method) }}
+              </span>
+            </td>
+            <td><span class="badge" [ngClass]="statusClass(p.status)">{{ p.status }}</span></td>
+            <td class="text-muted">{{ p.date | date:'dd MMM, h:mm a' }}</td>
+            <td>
+              <a [routerLink]="['/admin/orders', p.id]" class="btn btn--outline btn--sm">
+                View Order
+              </a>
+            </td>
+          </tr>
+          <tr *ngIf="filteredPayments.length === 0">
+            <td colspan="7" style="text-align:center;padding:3rem;color:#B0A899">
+              No transactions found
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Pagination -->
+    <div style="display:flex;justify-content:center;gap:0.5rem;margin-top:1.25rem" *ngIf="totalPages > 1">
+      <button *ngFor="let p of [].constructor(totalPages); let i = index"
+              class="shop-pagination__btn"
+              [class.active]="i+1 === currentPage"
+              (click)="currentPage = i+1; loadPayments()">{{ i+1 }}</button>
+    </div>
+  </div>
+</div>

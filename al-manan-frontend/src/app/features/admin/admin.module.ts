@@ -13,6 +13,8 @@ import { OrderListComponent } from './order-list/order-list.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { BuyerProfilesComponent } from './buyer-profiles/buyer-profiles.component';
 import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
+import { AdminPaymentsComponent } from './admin-payments/admin-payments.component';
+import { AdminInventoryComponent } from './admin-inventory/admin-inventory.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +26,9 @@ import { AdminSettingsComponent } from './admin-settings/admin-settings.componen
     OrderListComponent,
     OrderDetailComponent,
     BuyerProfilesComponent,
-    AdminSettingsComponent
+    AdminSettingsComponent,
+    AdminPaymentsComponent,
+    AdminInventoryComponent
   ],
   imports: [
     CommonModule,

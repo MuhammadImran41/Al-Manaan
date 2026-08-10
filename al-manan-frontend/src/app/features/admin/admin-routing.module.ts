@@ -9,6 +9,8 @@ import { OrderListComponent } from './order-list/order-list.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { BuyerProfilesComponent } from './buyer-profiles/buyer-profiles.component';
 import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
+import { AdminPaymentsComponent } from './admin-payments/admin-payments.component';
+import { AdminInventoryComponent } from './admin-inventory/admin-inventory.component';
 import { AdminGuard } from '../../core/guards/admin.guard';
 
 const routes: Routes = [
@@ -25,7 +27,9 @@ const routes: Routes = [
       { path: 'orders',            component: OrderListComponent      },
       { path: 'orders/:id',        component: OrderDetailComponent    },
       { path: 'buyers',            component: BuyerProfilesComponent  },
-      { path: 'settings',          component: AdminSettingsComponent  }
+      { path: 'settings',          component: AdminSettingsComponent  },
+      { path: 'payments',          component: AdminPaymentsComponent  },
+      { path: 'inventory',         component: AdminInventoryComponent }
     ]
   }
 ];

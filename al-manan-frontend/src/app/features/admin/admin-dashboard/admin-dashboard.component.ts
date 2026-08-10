@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { ProductService } from '../../../core/services/product.service';
 import { OrderService } from '../../../core/services/order.service';
@@ -16,8 +17,9 @@ import { environment } from '../../../../environments/environment';
 export class AdminDashboardComponent implements OnInit {
   recentOrders: Order[]   = [];
   recentProducts: Product[] = [];
-  stats = { totalOrders: 0, totalRevenue: 0, totalProducts: 0 };
+  stats = { totalOrders: 0, totalRevenue: 0, totalProducts: 0, lowStock: 0 };
   isLoading = true;
+  weeklyData: { day: string; revenue: number; count: number; pct?: number }[] = [];
 
   constructor(
     private productService: ProductService,
@@ -30,20 +32,38 @@ export class AdminDashboardComponent implements OnInit {
   ngOnInit(): void {
     this.orderService.getAllOrders(1, 8).subscribe({
       next: res => {
-        this.recentOrders   = res.items;
-        this.stats.totalOrders  = res.totalCount;
-        this.stats.totalRevenue = res.items.reduce((s: number, o: Order) => s + o.totalAmount, 0);
-        this.isLoading = false;
+        this.recentOrders        = res.items;
+        this.stats.totalOrders   = res.totalCount;
+        this.stats.totalRevenue  = res.items.reduce((s: number, o: Order) => s + o.totalAmount, 0);
+        this.isLoading           = false;
+        this.buildWeeklyChart(res.items);
       },
       error: () => (this.isLoading = false)
     });
 
     this.productService.getProducts({ pageSize: 8 }).subscribe({
       next: res => {
-        this.recentProducts    = res.items;
+        this.recentProducts      = res.items;
         this.stats.totalProducts = res.totalCount;
+        this.stats.lowStock      = res.items.filter((p: Product) => p.stockQuantity <= 5).length;
       }
     });
+  }
+
+  private buildWeeklyChart(orders: Order[]): void {
+    const days = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+    const today = new Date().getDay();
+    this.weeklyData = Array.from({ length: 7 }, (_, i) => {
+      const d = new Date(); d.setDate(d.getDate() - (6 - i));
+      const dayOrders = orders.filter(o => new Date(o.createdAt).toDateString() === d.toDateString());
+      return {
+        day: days[(today - 6 + i + 7) % 7],
+        revenue: dayOrders.reduce((s, o) => s + o.totalAmount, 0),
+        count: dayOrders.length
+      };
+    });
+    const max = Math.max(...this.weeklyData.map(d => d.revenue), 1);
+    this.weeklyData.forEach(d => d.pct = Math.round((d.revenue / max) * 100));
   }
 
   // ---- Delete product ----
