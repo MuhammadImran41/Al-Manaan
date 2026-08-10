@@ -1,11 +1,26 @@
-﻿<article class="product-card" #cardEl (click)="navigateToProduct()">
+﻿<article class="product-card" #cardEl
+         (click)="navigateToProduct()"
+         (mouseenter)="isHovered=true"
+         (mouseleave)="isHovered=false">
 
   <!-- Image -->
   <div class="product-card__image-wrap">
+    <!-- Main image -->
     <img
-      [src]="product.mainImageUrl || 'assets/images/placeholder.svg'"
+      [src]="mainImageUrl"
       [alt]="product.name"
-      class="product-card__image"
+      class="product-card__image product-card__image--main"
+      [class.product-card__image--hidden]="isHovered && hoverImageUrl"
+      loading="lazy"
+      (error)="onImgError($event)"
+    />
+    <!-- Hover image (second image) -->
+    <img
+      *ngIf="hoverImageUrl"
+      [src]="hoverImageUrl"
+      [alt]="product.name + ' alternate'"
+      class="product-card__image product-card__image--hover"
+      [class.product-card__image--visible]="isHovered && hoverImageUrl"
       loading="lazy"
       (error)="onImgError($event)"
     />

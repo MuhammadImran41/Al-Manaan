@@ -18,6 +18,7 @@ export class ProductCardComponent implements AfterViewInit {
 
   isWishlisted = false;
   isAddingToCart = false;
+  isHovered = false;
 
   constructor(
     private guestCart: GuestCartService,
@@ -25,15 +26,24 @@ export class ProductCardComponent implements AfterViewInit {
     private router: Router
   ) {}
 
-  ngAfterViewInit(): void {
-    // 3D tilt DISABLED — causes scroll shake on Windows
-  }
+  ngAfterViewInit(): void {}
 
   get displayPrice(): number { return this.product.salePrice || this.product.price; }
 
   get discountPercent(): number | null {
     if (!this.product.salePrice) return null;
     return Math.round((1 - this.product.salePrice / this.product.price) * 100);
+  }
+
+  // Second image for hover effect
+  get hoverImageUrl(): string | null {
+    if (!this.product.images || this.product.images.length < 2) return null;
+    const nonMain = this.product.images.find(i => !i.isMain);
+    return nonMain?.imageUrl || null;
+  }
+
+  get mainImageUrl(): string {
+    return this.product.mainImageUrl || 'assets/images/placeholder.svg';
   }
 
   addToCart(event: Event): void {
