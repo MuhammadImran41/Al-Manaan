@@ -199,9 +199,33 @@ public class ProductsController : BaseApiController
             ProductId = id
         };
 
-        // If setting as main, clear other main flags
         if (image.IsMain)
             product.Images.ToList().ForEach(i => i.IsMain = false);
+
+        product.Images.Add(image);
+        await _productRepo.SaveChangesAsync();
+
+        return Ok(new { image.Id, image.ImageUrl, image.IsMain });
+    }
+
+    /// <summary>Add product image by URL (Admin only)</summary>
+    [Authorize(Policy = "AdminOnly")]
+    [HttpPost("{id:int}/images/url")]
+    public async Task<ActionResult> AddImageByUrl(int id, [FromBody] ProductImageUrlDto dto)
+    {
+        var product = await _productRepo.GetProductWithDetailsAsync(id);
+        if (product == null) return NotFound(new { message = "Product not found" });
+
+        if (dto.IsMain)
+            product.Images.ToList().ForEach(i => i.IsMain = false);
+
+        var image = new ProductImage
+        {
+            ImageUrl  = dto.ImageUrl,
+            IsMain    = dto.IsMain || !product.Images.Any(),
+            SortOrder = dto.SortOrder,
+            ProductId = id
+        };
 
         product.Images.Add(image);
         await _productRepo.SaveChangesAsync();

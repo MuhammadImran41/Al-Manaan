@@ -11,76 +11,149 @@
 
   <div class="admin-card" *ngIf="!isLoading" [formGroup]="form">
     <div class="form-grid">
+
+      <!-- Product Name -->
       <div class="form-group form-group--full">
         <label class="form-label">Product Name *</label>
-        <input type="text" formControlName="name" class="form-control" [class.is-error]="fieldError('name')" />
+        <input type="text" formControlName="name" class="form-control"
+               [class.is-error]="fieldError('name')" placeholder="e.g. Embroidered Lawn Suit" />
         <span class="form-error" *ngIf="fieldError('name')">Required</span>
       </div>
 
+      <!-- Price -->
       <div class="form-group">
         <label class="form-label">Price (PKR) *</label>
-        <input type="number" formControlName="price" class="form-control" [class.is-error]="fieldError('price')" />
+        <input type="number" formControlName="price" class="form-control"
+               [class.is-error]="fieldError('price')" placeholder="4500" />
       </div>
 
+      <!-- Sale Price -->
       <div class="form-group">
-        <label class="form-label">Sale Price (PKR)</label>
-        <input type="number" formControlName="salePrice" class="form-control" />
+        <label class="form-label">Sale Price (PKR) <span style="color:var(--color-text-muted);font-size:0.75rem">(optional)</span></label>
+        <input type="number" formControlName="salePrice" class="form-control" placeholder="3999" />
       </div>
 
+      <!-- SKU -->
       <div class="form-group">
-        <label class="form-label">SKU *</label>
-        <input type="text" formControlName="sku" class="form-control" [class.is-error]="fieldError('sku')" />
+        <label class="form-label">
+          SKU *
+          <span style="color:var(--color-text-muted);font-size:0.72rem;margin-left:6px">Auto-generated — can edit</span>
+        </label>
+        <div style="display:flex;gap:0.5rem">
+          <input type="text" formControlName="sku" class="form-control"
+                 [class.is-error]="fieldError('sku')" style="flex:1" />
+          <button type="button" class="btn btn--ghost btn--sm"
+                  style="white-space:nowrap"
+                  (click)="form.get('sku')?.setValue(generateSku())">
+            Regenerate
+          </button>
+        </div>
+        <span class="form-hint" style="font-size:0.72rem;color:var(--color-text-muted)">
+          Unique product code — e.g. ALM-LAWN-001
+        </span>
       </div>
 
+      <!-- Stock -->
       <div class="form-group">
         <label class="form-label">Stock Quantity</label>
-        <input type="number" formControlName="stockQuantity" class="form-control" />
+        <input type="number" formControlName="stockQuantity" class="form-control" placeholder="50" />
       </div>
 
+      <!-- Category -->
       <div class="form-group form-group--full">
         <label class="form-label">Category *</label>
-        <select formControlName="categoryId" class="form-control" [class.is-error]="fieldError('categoryId')">
+        <select formControlName="categoryId" class="form-control"
+                [class.is-error]="fieldError('categoryId')">
           <option [value]="null">Select category...</option>
           <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
         </select>
+        <span class="form-error" *ngIf="fieldError('categoryId')">Required</span>
       </div>
 
+      <!-- Image URL -->
+      <div class="form-group form-group--full">
+        <label class="form-label">Product Image URL</label>
+        <div style="display:flex;gap:1rem;align-items:flex-start">
+          <div style="flex:1">
+            <input type="url" formControlName="imageUrl" class="form-control"
+                   placeholder="https://images.unsplash.com/photo-xxx or any image URL"
+                   (input)="onImageUrlChange($any($event.target).value)" />
+            <span class="form-hint" style="font-size:0.72rem;color:var(--color-text-muted)">
+              Paste any image URL — Unsplash, Google Images, etc.
+            </span>
+          </div>
+          <!-- Image preview -->
+          <div *ngIf="imagePreview" style="width:80px;height:100px;border-radius:8px;overflow:hidden;
+               border:1px solid var(--color-border-light);flex-shrink:0">
+            <img [src]="imagePreview" alt="Preview"
+                 style="width:100%;height:100%;object-fit:cover"
+                 (error)="imagePreview = null" />
+          </div>
+          <div *ngIf="!imagePreview"
+               style="width:80px;height:100px;border-radius:8px;
+               border:1px dashed var(--color-border-light);flex-shrink:0;
+               display:flex;align-items:center;justify-content:center;
+               color:var(--color-text-muted);font-size:0.7rem;text-align:center">
+            Preview
+          </div>
+        </div>
+      </div>
+
+      <!-- Short Description -->
       <div class="form-group form-group--full">
         <label class="form-label">Short Description</label>
-        <input type="text" formControlName="shortDescription" class="form-control" />
+        <input type="text" formControlName="shortDescription" class="form-control"
+               placeholder="Brief one-line description" />
       </div>
 
+      <!-- Full Description -->
       <div class="form-group form-group--full">
         <label class="form-label">Full Description *</label>
-        <textarea formControlName="description" class="form-control" rows="5" [class.is-error]="fieldError('description')"></textarea>
+        <textarea formControlName="description" class="form-control" rows="5"
+                  [class.is-error]="fieldError('description')"
+                  placeholder="Detailed product description..."></textarea>
+        <span class="form-error" *ngIf="fieldError('description')">Required</span>
       </div>
 
+      <!-- Fabric -->
       <div class="form-group">
         <label class="form-label">Fabric</label>
-        <input type="text" formControlName="fabric" class="form-control" />
+        <input type="text" formControlName="fabric" class="form-control"
+               placeholder="e.g. Pure Cotton, Chiffon" />
       </div>
 
+      <!-- Care -->
       <div class="form-group">
         <label class="form-label">Care Instructions</label>
-        <input type="text" formControlName="care" class="form-control" />
+        <input type="text" formControlName="care" class="form-control"
+               placeholder="e.g. Hand wash cold" />
       </div>
+
     </div>
 
-    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;margin:1.5rem 0;padding:1.5rem 0;border-top:1px solid var(--color-border-light)">
+    <!-- Flags -->
+    <div style="display:flex;flex-wrap:wrap;gap:1.5rem;margin:1.5rem 0;
+                padding:1.25rem;background:var(--color-bg-card);
+                border-radius:10px;border:1px solid var(--color-border-light)">
       <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.875rem">
-        <input type="checkbox" formControlName="isActive" style="accent-color:var(--color-primary)" /> Active
+        <input type="checkbox" formControlName="isActive" style="accent-color:var(--color-primary)" />
+        Active
       </label>
       <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.875rem">
-        <input type="checkbox" formControlName="isFeatured" style="accent-color:var(--color-primary)" /> Featured
+        <input type="checkbox" formControlName="isFeatured" style="accent-color:var(--color-primary)" />
+        Featured
       </label>
       <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.875rem">
-        <input type="checkbox" formControlName="isBestSeller" style="accent-color:var(--color-primary)" /> Best Seller
+        <input type="checkbox" formControlName="isBestSeller" style="accent-color:var(--color-primary)" />
+        Best Seller
       </label>
       <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.875rem">
-        <input type="checkbox" formControlName="isNew" style="accent-color:var(--color-primary)" /> New Arrival
+        <input type="checkbox" formControlName="isNew" style="accent-color:var(--color-primary)" />
+        New Arrival
       </label>
     </div>
 
+    <!-- Actions -->
     <div style="display:flex;gap:1rem">
       <button class="btn btn--primary btn--lg" (click)="onSubmit()" [disabled]="isSaving">
         {{ isSaving ? 'Saving...' : (isEdit ? 'Update Product' : 'Create Product') }}
