@@ -8,6 +8,7 @@ import { ProductFormComponent } from './product-form/product-form.component';
 import { OrderListComponent } from './order-list/order-list.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { BuyerProfilesComponent } from './buyer-profiles/buyer-profiles.component';
+import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
 import { AdminGuard } from '../../core/guards/admin.guard';
 
 const routes: Routes = [
@@ -23,7 +24,8 @@ const routes: Routes = [
       { path: 'products/:id/edit', component: ProductFormComponent    },
       { path: 'orders',            component: OrderListComponent      },
       { path: 'orders/:id',        component: OrderDetailComponent    },
-      { path: 'buyers',            component: BuyerProfilesComponent  }
+      { path: 'buyers',            component: BuyerProfilesComponent  },
+      { path: 'settings',          component: AdminSettingsComponent  }
     ]
   }
 ];

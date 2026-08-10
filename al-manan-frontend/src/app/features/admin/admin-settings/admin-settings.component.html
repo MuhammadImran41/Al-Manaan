@@ -1,0 +1,224 @@
+<div class="admin page-enter">
+  <div class="admin-header">
+    <div>
+      <h1>Settings</h1>
+      <p>Manage your store, account and notification preferences</p>
+    </div>
+  </div>
+
+  <!-- Tabs -->
+  <div style="display:flex;gap:0.375rem;margin-bottom:1.5rem;flex-wrap:wrap">
+    <button class="btn btn--sm" [class.btn--primary]="activeTab==='store'"
+            [class.btn--ghost]="activeTab!=='store'" (click)="activeTab='store'">
+      Store Info
+    </button>
+    <button class="btn btn--sm" [class.btn--primary]="activeTab==='shipping'"
+            [class.btn--ghost]="activeTab!=='shipping'" (click)="activeTab='shipping'">
+      Shipping
+    </button>
+    <button class="btn btn--sm" [class.btn--primary]="activeTab==='notifications'"
+            [class.btn--ghost]="activeTab!=='notifications'" (click)="activeTab='notifications'">
+      Notifications
+    </button>
+    <button class="btn btn--sm" [class.btn--primary]="activeTab==='account'"
+            [class.btn--ghost]="activeTab!=='account'" (click)="activeTab='account'">
+      My Account
+    </button>
+  </div>
+
+  <!-- ── STORE INFO ── -->
+  <div *ngIf="activeTab==='store'" class="admin-card" [formGroup]="storeForm">
+    <div class="admin-card__header">
+      <h2 class="admin-card__title">Store Information</h2>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Store Name *</label>
+        <input type="text" formControlName="storeName" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Store Email *</label>
+        <input type="email" formControlName="storeEmail" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Phone Number</label>
+        <input type="text" formControlName="storePhone" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Currency</label>
+        <select formControlName="currency" class="form-control">
+          <option value="PKR">PKR — Pakistani Rupee</option>
+          <option value="USD">USD — US Dollar</option>
+        </select>
+      </div>
+      <div class="form-group form-group--full">
+        <label class="form-label">Store Address</label>
+        <input type="text" formControlName="storeAddress" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Tax Rate (%)</label>
+        <input type="number" formControlName="taxRate" class="form-control" min="0" max="100" />
+      </div>
+    </div>
+    <div style="margin-top:1.5rem">
+      <button class="btn btn--primary" (click)="saveStore()" [disabled]="isSaving">
+        {{ isSaving ? 'Saving...' : 'Save Store Settings' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ── SHIPPING ── -->
+  <div *ngIf="activeTab==='shipping'" class="admin-card" [formGroup]="shippingForm">
+    <div class="admin-card__header">
+      <h2 class="admin-card__title">Shipping Settings</h2>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">Free Shipping Above (PKR)</label>
+        <input type="number" formControlName="freeShippingThreshold" class="form-control" />
+        <span style="font-size:0.72rem;color:#7A6F62">Currently: PKR {{ shippingForm.get('freeShippingThreshold')?.value | number }}</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Standard Shipping (PKR)</label>
+        <input type="number" formControlName="standardShipping" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Express Shipping (PKR)</label>
+        <input type="number" formControlName="expressShipping" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Delivery — Local Cities</label>
+        <input type="text" formControlName="deliveryDaysLocal" class="form-control" placeholder="2-3 days" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Delivery — National</label>
+        <input type="text" formControlName="deliveryDaysNational" class="form-control" placeholder="3-5 days" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Delivery — Remote Areas</label>
+        <input type="text" formControlName="deliveryDaysRemote" class="form-control" placeholder="5-7 days" />
+      </div>
+      <div class="form-group form-group--full">
+        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.875rem">
+          <input type="checkbox" formControlName="codAvailable" style="accent-color:#B8952A" />
+          Cash on Delivery (COD) available
+        </label>
+      </div>
+    </div>
+    <div style="margin-top:1.5rem">
+      <button class="btn btn--primary" (click)="saveShipping()" [disabled]="isSaving">
+        {{ isSaving ? 'Saving...' : 'Save Shipping Settings' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ── NOTIFICATIONS ── -->
+  <div *ngIf="activeTab==='notifications'" class="admin-card" [formGroup]="notifForm">
+    <div class="admin-card__header">
+      <h2 class="admin-card__title">Notification Preferences</h2>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:1.25rem">
+
+      <div style="background:#FAF6F0;border-radius:10px;padding:1.25rem;border:1px solid #EDE8DF">
+        <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A6F62;margin-bottom:1rem">New Order Alerts</h4>
+        <div style="display:flex;flex-direction:column;gap:0.75rem">
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
+            <input type="checkbox" formControlName="newOrderEmail" style="accent-color:#B8952A;width:16px;height:16px" />
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">Email notification</p>
+              <p style="font-size:0.75rem;color:#7A6F62;margin:0">Receive email on every new order at almananshop@gmail.com</p>
+            </div>
+          </label>
+          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
+            <input type="checkbox" formControlName="newOrderSms" style="accent-color:#B8952A;width:16px;height:16px" />
+            <div>
+              <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">SMS notification</p>
+              <p style="font-size:0.75rem;color:#7A6F62;margin:0">WhatsApp/SMS alert on new orders</p>
+            </div>
+          </label>
+        </div>
+      </div>
+
+      <div style="background:#FAF6F0;border-radius:10px;padding:1.25rem;border:1px solid #EDE8DF">
+        <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A6F62;margin-bottom:1rem">Stock Alerts</h4>
+        <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;margin-bottom:0.875rem">
+          <input type="checkbox" formControlName="lowStockAlert" style="accent-color:#B8952A;width:16px;height:16px" />
+          <div>
+            <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">Low stock alert</p>
+            <p style="font-size:0.75rem;color:#7A6F62;margin:0">Alert when product stock falls below threshold</p>
+          </div>
+        </label>
+        <div class="form-group" style="max-width:200px">
+          <label class="form-label">Low Stock Threshold</label>
+          <input type="number" formControlName="lowStockThreshold" class="form-control" min="1" />
+        </div>
+      </div>
+
+      <div style="background:#FAF6F0;border-radius:10px;padding:1.25rem;border:1px solid #EDE8DF">
+        <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A6F62;margin-bottom:1rem">Reports</h4>
+        <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
+          <input type="checkbox" formControlName="dailyReport" style="accent-color:#B8952A;width:16px;height:16px" />
+          <div>
+            <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">Daily sales report</p>
+            <p style="font-size:0.75rem;color:#7A6F62;margin:0">Receive daily summary email every morning</p>
+          </div>
+        </label>
+      </div>
+    </div>
+
+    <div style="margin-top:1.5rem">
+      <button class="btn btn--primary" (click)="saveNotifications()" [disabled]="isSaving">
+        {{ isSaving ? 'Saving...' : 'Save Preferences' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ── ACCOUNT ── -->
+  <div *ngIf="activeTab==='account'" class="admin-card" [formGroup]="accountForm">
+    <div class="admin-card__header">
+      <h2 class="admin-card__title">My Account</h2>
+    </div>
+    <div class="form-grid">
+      <div class="form-group">
+        <label class="form-label">First Name *</label>
+        <input type="text" formControlName="firstName" class="form-control" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Last Name *</label>
+        <input type="text" formControlName="lastName" class="form-control" />
+      </div>
+      <div class="form-group form-group--full">
+        <label class="form-label">Email *</label>
+        <input type="email" formControlName="email" class="form-control" />
+      </div>
+    </div>
+
+    <div style="margin:1.5rem 0 1rem;padding-top:1.25rem;border-top:1px solid #EDE8DF">
+      <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A6F62;margin-bottom:1rem">Change Password</h4>
+      <div class="form-grid">
+        <div class="form-group form-group--full">
+          <label class="form-label">Current Password</label>
+          <input type="password" formControlName="currentPassword" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input type="password" formControlName="newPassword" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <input type="password" formControlName="confirmPassword" class="form-control" />
+        </div>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:1rem;margin-top:1rem">
+      <button class="btn btn--primary" (click)="saveAccount()" [disabled]="isSaving">
+        {{ isSaving ? 'Saving...' : 'Update Account' }}
+      </button>
+      <button class="btn btn--delete" (click)="logout()">
+        Sign Out
+      </button>
+    </div>
+  </div>
+</div>

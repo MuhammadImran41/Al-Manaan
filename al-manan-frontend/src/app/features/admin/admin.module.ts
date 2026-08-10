@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 import { AdminRoutingModule } from './admin-routing.module';
 import { SharedModule } from '../../shared/shared.module';
 
@@ -11,6 +12,7 @@ import { ProductFormComponent } from './product-form/product-form.component';
 import { OrderListComponent } from './order-list/order-list.component';
 import { OrderDetailComponent } from './order-detail/order-detail.component';
 import { BuyerProfilesComponent } from './buyer-profiles/buyer-profiles.component';
+import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
 
 @NgModule({
   declarations: [
@@ -21,10 +23,12 @@ import { BuyerProfilesComponent } from './buyer-profiles/buyer-profiles.componen
     ProductFormComponent,
     OrderListComponent,
     OrderDetailComponent,
-    BuyerProfilesComponent
+    BuyerProfilesComponent,
+    AdminSettingsComponent
   ],
   imports: [
     CommonModule,
+    HttpClientModule,
     AdminRoutingModule,
     SharedModule
   ]
