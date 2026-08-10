@@ -15,13 +15,20 @@ import { environment } from '../../../../environments/environment';
 export class ProductFormComponent implements OnInit {
   form!: FormGroup;
   categories: Category[] = [];
-  isLoading = false;
-  isSaving  = false;
-  isEdit    = false;
+  isLoading  = false;
+  isSaving   = false;
+  isEdit     = false;
   productId: number | null = null;
-  imagePreview: string | null = null;
-  imageMode: 'url' | 'upload' = 'url';
-  isUploading = false;
+
+  // Image 1
+  imagePreview:  string | null = null;
+  imageMode:  'url' | 'upload' = 'url';
+  isUploading  = false;
+
+  // Image 2
+  imagePreview2: string | null = null;
+  image2Mode: 'url' | 'upload' = 'url';
+  isUploading2 = false;
 
   constructor(
     private fb: FormBuilder,
@@ -38,23 +45,26 @@ export class ProductFormComponent implements OnInit {
 
     const id = this.route.snapshot.params['id'];
     if (id) {
-      this.isEdit   = true;
+      this.isEdit    = true;
       this.productId = +id;
       this.isLoading = true;
       this.productService.getProduct(this.productId).subscribe({
         next: p => {
           this.form.patchValue(p);
-          this.imagePreview = p.mainImageUrl || null;
+          // Load existing images
+          const mainImg = p.images?.find((i: any) => i.isMain);
+          const hoverImg = p.images?.find((i: any) => !i.isMain);
+          if (mainImg)  { this.imagePreview  = mainImg.imageUrl;  this.form.get('imageUrl')?.setValue(mainImg.imageUrl); }
+          if (hoverImg) { this.imagePreview2 = hoverImg.imageUrl; this.form.get('imageUrl2')?.setValue(hoverImg.imageUrl); }
           this.isLoading = false;
         },
         error: () => (this.isLoading = false)
       });
     } else {
-      // Auto-generate SKU for new products
       this.form.get('sku')?.setValue(this.generateSku());
     }
 
-    // Update slug when name changes
+    // Auto slug from name
     this.form.get('name')?.valueChanges.subscribe(name => {
       if (!this.isEdit) {
         const slug = name?.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || '';
@@ -77,6 +87,7 @@ export class ProductFormComponent implements OnInit {
       fabric:           [''],
       care:             [''],
       imageUrl:         [''],
+      imageUrl2:        [''],
       isFeatured:       [false],
       isBestSeller:     [false],
       isNew:            [true],
@@ -85,75 +96,112 @@ export class ProductFormComponent implements OnInit {
   }
 
   generateSku(): string {
-    const prefix = 'ALM';
     const random = Math.random().toString(36).substring(2, 7).toUpperCase();
     const ts     = Date.now().toString().slice(-4);
-    return `${prefix}-${random}-${ts}`;
+    return `ALM-${random}-${ts}`;
   }
 
+  // ── Image 1 ─────────────────────────────────────────────
   onImageUrlChange(url: string): void {
     this.imagePreview = url || null;
   }
 
-  onFileSelect(event: Event): void {
+  onFileSelect(event: Event, slot: 1 | 2): void {
     const file = (event.target as HTMLInputElement).files?.[0];
-    if (file) this.uploadFile(file);
+    if (file) this.uploadFile(file, slot);
   }
 
-  onFileDrop(event: DragEvent): void {
+  onFileDrop(event: DragEvent, slot: 1 | 2): void {
     event.preventDefault();
     const file = event.dataTransfer?.files?.[0];
-    if (file) this.uploadFile(file);
+    if (file) this.uploadFile(file, slot);
   }
 
-  private uploadFile(file: File): void {
+  private uploadFile(file: File, slot: 1 | 2): void {
     if (file.size > 5 * 1024 * 1024) {
       this.toastService.error('File too large — max 5MB');
       return;
     }
-    this.isUploading = true;
+    if (slot === 1) this.isUploading  = true;
+    else            this.isUploading2 = true;
 
-    // Convert to base64 and use as data URL for preview + store as base64
     const reader = new FileReader();
     reader.onload = (e) => {
       const dataUrl = e.target?.result as string;
-      this.imagePreview = dataUrl;
-      this.form.get('imageUrl')?.setValue(dataUrl);
-      this.isUploading = false;
+      if (slot === 1) {
+        this.imagePreview  = dataUrl;
+        this.form.get('imageUrl')?.setValue(dataUrl);
+        this.isUploading  = false;
+      } else {
+        this.imagePreview2 = dataUrl;
+        this.form.get('imageUrl2')?.setValue(dataUrl);
+        this.isUploading2 = false;
+      }
     };
     reader.readAsDataURL(file);
   }
 
+  // ── Image 2 ─────────────────────────────────────────────
+  onImage2UrlChange(url: string): void {
+    this.imagePreview2 = url || null;
+  }
+
+  // ── Submit ───────────────────────────────────────────────
   onSubmit(): void {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.isSaving = true;
 
     const payload = { ...this.form.value };
-    // Remove empty salePrice
     if (!payload.salePrice) delete payload.salePrice;
+    delete payload.imageUrl;
+    delete payload.imageUrl2;
 
-    const apiUrl = `${environment.apiUrl}/products`;
+    const apiUrl   = `${environment.apiUrl}/products`;
+    const img1     = this.form.get('imageUrl')?.value;
+    const img2     = this.form.get('imageUrl2')?.value;
 
     if (this.isEdit && this.productId) {
       this.http.put(`${apiUrl}/${this.productId}`, payload).subscribe({
-        next: () => this.onSuccess('Product updated!'),
+        next: () => {
+          this.saveImages(this.productId!, img1, img2, true);
+        },
         error: (e) => this.onError(e)
       });
     } else {
       this.http.post(apiUrl, payload).subscribe({
         next: (res: any) => {
-          // If image URL provided, save it as product image
-          if (payload.imageUrl && res?.id) {
-            this.http.post(`${apiUrl}/${res.id}/images/url`, {
-              imageUrl: payload.imageUrl,
-              isMain: true,
-              sortOrder: 1
-            }).subscribe();
-          }
-          this.onSuccess('Product created!');
+          this.saveImages(res?.id, img1, img2, false);
         },
         error: (e) => this.onError(e)
       });
+    }
+  }
+
+  private saveImages(productId: number, img1: string, img2: string, isEdit: boolean): void {
+    const apiUrl = `${environment.apiUrl}/products`;
+    const calls: Promise<void>[] = [];
+
+    if (img1) {
+      calls.push(
+        this.http.post(`${apiUrl}/${productId}/images/url`, {
+          imageUrl: img1, isMain: true, sortOrder: 1
+        }).toPromise().then(() => {})
+      );
+    }
+    if (img2) {
+      calls.push(
+        this.http.post(`${apiUrl}/${productId}/images/url`, {
+          imageUrl: img2, isMain: false, sortOrder: 2
+        }).toPromise().then(() => {})
+      );
+    }
+
+    Promise.allSettled(calls).then(() => {
+      this.onSuccess(isEdit ? 'Product updated!' : 'Product created!');
+    });
+
+    if (calls.length === 0) {
+      this.onSuccess(isEdit ? 'Product updated!' : 'Product created!');
     }
   }
 
