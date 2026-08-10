@@ -26,7 +26,7 @@
     </button>
   </div>
 
-  <!-- â”€â”€ STORE INFO â”€â”€ -->
+  <!-- STORE INFO -->
   <div *ngIf="activeTab==='store'" class="admin-card" [formGroup]="storeForm">
     <div class="admin-card__header">
       <h2 class="admin-card__title">Store Information</h2>
@@ -47,8 +47,8 @@
       <div class="form-group">
         <label class="form-label">Currency</label>
         <select formControlName="currency" class="form-control">
-          <option value="PKR">PKR â€” Pakistani Rupee</option>
-          <option value="USD">USD â€” US Dollar</option>
+          <option value="PKR">PKR - Pakistani Rupee</option>
+          <option value="USD">USD - US Dollar</option>
         </select>
       </div>
       <div class="form-group form-group--full">
@@ -58,6 +58,7 @@
       <div class="form-group">
         <label class="form-label">Tax Rate (%)</label>
         <input type="number" formControlName="taxRate" class="form-control" min="0" max="100" />
+        <span style="font-size:0.72rem;color:#7A6F62">0 = no tax applied on orders</span>
       </div>
     </div>
     <div style="margin-top:1.5rem">
@@ -67,43 +68,73 @@
     </div>
   </div>
 
-  <!-- â”€â”€ SHIPPING â”€â”€ -->
+  <!-- SHIPPING -->
   <div *ngIf="activeTab==='shipping'" class="admin-card" [formGroup]="shippingForm">
     <div class="admin-card__header">
       <h2 class="admin-card__title">Shipping Settings</h2>
     </div>
     <div class="form-grid">
+
       <div class="form-group">
         <label class="form-label">Free Shipping Above (PKR)</label>
         <input type="number" formControlName="freeShippingThreshold" class="form-control" />
-        <span style="font-size:0.72rem;color:#7A6F62">Currently: PKR {{ shippingForm.get('freeShippingThreshold')?.value | number }}</span>
+        <span style="font-size:0.72rem;color:#7A6F62">
+          Orders above this amount get free shipping
+        </span>
       </div>
+
       <div class="form-group">
-        <label class="form-label">Standard Shipping (PKR)</label>
+        <label class="form-label">Standard Shipping Rate (PKR)</label>
         <input type="number" formControlName="standardShipping" class="form-control" />
+        <span style="font-size:0.72rem;color:#7A6F62">
+          Default delivery charge per order
+        </span>
       </div>
+
       <div class="form-group">
-        <label class="form-label">Express Shipping (PKR)</label>
+        <label class="form-label">Express Shipping Rate (PKR)</label>
         <input type="number" formControlName="expressShipping" class="form-control" />
+        <span style="font-size:0.72rem;color:#7A6F62">
+          Fast delivery charge (optional)
+        </span>
       </div>
+
       <div class="form-group">
-        <label class="form-label">Delivery â€” Local Cities</label>
-        <input type="text" formControlName="deliveryDaysLocal" class="form-control" placeholder="2-3 days" />
+        <label class="form-label">Delivery Days — Local Cities</label>
+        <input type="text" formControlName="deliveryDaysLocal" class="form-control" placeholder="2-3" />
+        <span style="font-size:0.72rem;color:#7A6F62">
+          Lahore, Karachi, Islamabad, Rawalpindi
+        </span>
       </div>
+
       <div class="form-group">
-        <label class="form-label">Delivery â€” National</label>
-        <input type="text" formControlName="deliveryDaysNational" class="form-control" placeholder="3-5 days" />
+        <label class="form-label">Delivery Days — Other Cities</label>
+        <input type="text" formControlName="deliveryDaysNational" class="form-control" placeholder="3-5" />
+        <span style="font-size:0.72rem;color:#7A6F62">
+          All other cities across Pakistan
+        </span>
       </div>
+
       <div class="form-group">
-        <label class="form-label">Delivery â€” Remote Areas</label>
-        <input type="text" formControlName="deliveryDaysRemote" class="form-control" placeholder="5-7 days" />
+        <label class="form-label">Delivery Days — Remote Areas</label>
+        <input type="text" formControlName="deliveryDaysRemote" class="form-control" placeholder="5-7" />
+        <span style="font-size:0.72rem;color:#7A6F62">
+          Rural and remote locations
+        </span>
       </div>
+
       <div class="form-group form-group--full">
-        <label style="display:flex;align-items:center;gap:0.5rem;cursor:pointer;font-size:0.875rem">
-          <input type="checkbox" formControlName="codAvailable" style="accent-color:#B8952A" />
-          Cash on Delivery (COD) available
+        <label style="display:flex;align-items:center;gap:0.625rem;cursor:pointer">
+          <input type="checkbox" formControlName="codAvailable" style="accent-color:#B8952A;width:16px;height:16px" />
+          <div>
+            <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">Cash on Delivery (COD)</p>
+            <p style="font-size:0.75rem;color:#7A6F62;margin:0">
+              Allow customers to pay cash when order arrives
+            </p>
+          </div>
         </label>
       </div>
+
     </div>
     <div style="margin-top:1.5rem">
       <button class="btn btn--primary" (click)="saveShipping()" [disabled]="isSaving">
@@ -112,7 +143,7 @@
     </div>
   </div>
 
-  <!-- â”€â”€ NOTIFICATIONS â”€â”€ -->
+  <!-- NOTIFICATIONS -->
   <div *ngIf="activeTab==='notifications'" class="admin-card" [formGroup]="notifForm">
     <div class="admin-card__header">
       <h2 class="admin-card__title">Notification Preferences</h2>
@@ -120,51 +151,87 @@
 
     <div style="display:flex;flex-direction:column;gap:1.25rem">
 
+      <!-- New Order -->
       <div style="background:#FAF6F0;border-radius:10px;padding:1.25rem;border:1px solid #EDE8DF">
-        <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A6F62;margin-bottom:1rem">New Order Alerts</h4>
-        <div style="display:flex;flex-direction:column;gap:0.75rem">
-          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
-            <input type="checkbox" formControlName="newOrderEmail" style="accent-color:#B8952A;width:16px;height:16px" />
+        <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;
+                   text-transform:uppercase;color:#7A6F62;margin:0 0 1rem">
+          New Order Alerts
+        </h4>
+        <div style="display:flex;flex-direction:column;gap:0.875rem">
+          <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer">
+            <input type="checkbox" formControlName="newOrderEmail"
+                   style="accent-color:#B8952A;width:16px;height:16px;margin-top:2px" />
             <div>
-              <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">Email notification</p>
-              <p style="font-size:0.75rem;color:#7A6F62;margin:0">Receive email on every new order at almananshop&#64;gmail.com</p>
+              <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">
+                Email notification
+              </p>
+              <p style="font-size:0.75rem;color:#7A6F62;margin:2px 0 0">
+                Get email at almananshop&#64;gmail.com when a new order is placed
+              </p>
             </div>
           </label>
-          <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
-            <input type="checkbox" formControlName="newOrderSms" style="accent-color:#B8952A;width:16px;height:16px" />
+          <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer">
+            <input type="checkbox" formControlName="newOrderSms"
+                   style="accent-color:#B8952A;width:16px;height:16px;margin-top:2px" />
             <div>
-              <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">SMS notification</p>
-              <p style="font-size:0.75rem;color:#7A6F62;margin:0">WhatsApp/SMS alert on new orders</p>
+              <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">
+                SMS / WhatsApp notification
+              </p>
+              <p style="font-size:0.75rem;color:#7A6F62;margin:2px 0 0">
+                Get WhatsApp message on 03171656231 for every new order
+              </p>
             </div>
           </label>
         </div>
       </div>
 
+      <!-- Low Stock -->
       <div style="background:#FAF6F0;border-radius:10px;padding:1.25rem;border:1px solid #EDE8DF">
-        <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A6F62;margin-bottom:1rem">Stock Alerts</h4>
-        <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer;margin-bottom:0.875rem">
-          <input type="checkbox" formControlName="lowStockAlert" style="accent-color:#B8952A;width:16px;height:16px" />
+        <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;
+                   text-transform:uppercase;color:#7A6F62;margin:0 0 1rem">
+          Low Stock Alerts
+        </h4>
+        <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer;margin-bottom:1rem">
+          <input type="checkbox" formControlName="lowStockAlert"
+                 style="accent-color:#B8952A;width:16px;height:16px;margin-top:2px" />
           <div>
-            <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">Low stock alert</p>
-            <p style="font-size:0.75rem;color:#7A6F62;margin:0">Alert when product stock falls below threshold</p>
+            <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">
+              Low stock alert
+            </p>
+            <p style="font-size:0.75rem;color:#7A6F62;margin:2px 0 0">
+              Get alert when any product stock falls below the threshold number
+            </p>
           </div>
         </label>
-        <div class="form-group" style="max-width:200px">
-          <label class="form-label">Low Stock Threshold</label>
+        <div class="form-group" style="max-width:220px">
+          <label class="form-label">Stock Threshold (units)</label>
           <input type="number" formControlName="lowStockThreshold" class="form-control" min="1" />
+          <span style="font-size:0.72rem;color:#7A6F62">
+            Alert when stock goes below this number
+          </span>
         </div>
       </div>
 
+      <!-- Daily Report -->
       <div style="background:#FAF6F0;border-radius:10px;padding:1.25rem;border:1px solid #EDE8DF">
-        <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A6F62;margin-bottom:1rem">Reports</h4>
-        <label style="display:flex;align-items:center;gap:0.75rem;cursor:pointer">
-          <input type="checkbox" formControlName="dailyReport" style="accent-color:#B8952A;width:16px;height:16px" />
+        <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;
+                   text-transform:uppercase;color:#7A6F62;margin:0 0 1rem">
+          Daily Report
+        </h4>
+        <label style="display:flex;align-items:flex-start;gap:0.75rem;cursor:pointer">
+          <input type="checkbox" formControlName="dailyReport"
+                 style="accent-color:#B8952A;width:16px;height:16px;margin-top:2px" />
           <div>
-            <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">Daily sales report</p>
-            <p style="font-size:0.75rem;color:#7A6F62;margin:0">Receive daily summary email every morning</p>
+            <p style="font-size:0.875rem;font-weight:600;color:#1C1A18;margin:0">
+              Daily sales summary
+            </p>
+            <p style="font-size:0.75rem;color:#7A6F62;margin:2px 0 0">
+              Receive a daily email every morning with total orders, revenue and top products
+            </p>
           </div>
         </label>
       </div>
+
     </div>
 
     <div style="margin-top:1.5rem">
@@ -174,7 +241,7 @@
     </div>
   </div>
 
-  <!-- â”€â”€ ACCOUNT â”€â”€ -->
+  <!-- MY ACCOUNT -->
   <div *ngIf="activeTab==='account'" class="admin-card" [formGroup]="accountForm">
     <div class="admin-card__header">
       <h2 class="admin-card__title">My Account</h2>
@@ -189,30 +256,36 @@
         <input type="text" formControlName="lastName" class="form-control" />
       </div>
       <div class="form-group form-group--full">
-        <label class="form-label">Email *</label>
+        <label class="form-label">Email Address *</label>
         <input type="email" formControlName="email" class="form-control" />
       </div>
     </div>
 
     <div style="margin:1.5rem 0 1rem;padding-top:1.25rem;border-top:1px solid #EDE8DF">
-      <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:#7A6F62;margin-bottom:1rem">Change Password</h4>
+      <h4 style="font-size:0.8rem;font-weight:700;letter-spacing:0.1em;
+                 text-transform:uppercase;color:#7A6F62;margin:0 0 1rem">
+        Change Password
+      </h4>
       <div class="form-grid">
         <div class="form-group form-group--full">
           <label class="form-label">Current Password</label>
-          <input type="password" formControlName="currentPassword" class="form-control" />
+          <input type="password" formControlName="currentPassword" class="form-control"
+                 placeholder="Enter current password" />
         </div>
         <div class="form-group">
           <label class="form-label">New Password</label>
-          <input type="password" formControlName="newPassword" class="form-control" />
+          <input type="password" formControlName="newPassword" class="form-control"
+                 placeholder="Min 6 characters" />
         </div>
         <div class="form-group">
-          <label class="form-label">Confirm Password</label>
-          <input type="password" formControlName="confirmPassword" class="form-control" />
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" formControlName="confirmPassword" class="form-control"
+                 placeholder="Repeat new password" />
         </div>
       </div>
     </div>
 
-    <div style="display:flex;gap:1rem;margin-top:1rem">
+    <div style="display:flex;gap:1rem;flex-wrap:wrap;margin-top:1rem">
       <button class="btn btn--primary" (click)="saveAccount()" [disabled]="isSaving">
         {{ isSaving ? 'Saving...' : 'Update Account' }}
       </button>
@@ -221,5 +294,5 @@
       </button>
     </div>
   </div>
-</div>
 
+</div>
