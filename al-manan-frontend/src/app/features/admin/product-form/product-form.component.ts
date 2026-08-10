@@ -20,6 +20,8 @@ export class ProductFormComponent implements OnInit {
   isEdit    = false;
   productId: number | null = null;
   imagePreview: string | null = null;
+  imageMode: 'url' | 'upload' = 'url';
+  isUploading = false;
 
   constructor(
     private fb: FormBuilder,
@@ -91,6 +93,35 @@ export class ProductFormComponent implements OnInit {
 
   onImageUrlChange(url: string): void {
     this.imagePreview = url || null;
+  }
+
+  onFileSelect(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) this.uploadFile(file);
+  }
+
+  onFileDrop(event: DragEvent): void {
+    event.preventDefault();
+    const file = event.dataTransfer?.files?.[0];
+    if (file) this.uploadFile(file);
+  }
+
+  private uploadFile(file: File): void {
+    if (file.size > 5 * 1024 * 1024) {
+      this.toastService.error('File too large — max 5MB');
+      return;
+    }
+    this.isUploading = true;
+
+    // Convert to base64 and use as data URL for preview + store as base64
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const dataUrl = e.target?.result as string;
+      this.imagePreview = dataUrl;
+      this.form.get('imageUrl')?.setValue(dataUrl);
+      this.isUploading = false;
+    };
+    reader.readAsDataURL(file);
   }
 
   onSubmit(): void {

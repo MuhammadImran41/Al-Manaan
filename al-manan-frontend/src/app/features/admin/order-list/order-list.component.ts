@@ -41,6 +41,19 @@ export class OrderListComponent implements OnInit {
     });
   }
 
+  updateStatus(order: Order, newStatus: string): void {
+    if (order.status === newStatus) return;
+    const prev = order.status;
+    order.status = newStatus; // optimistic update
+    this.orderService.updateOrderStatus(order.id, newStatus).subscribe({
+      next: () => this.toastService.success(`Order ${order.orderNumber} → ${newStatus}`),
+      error: () => {
+        order.status = prev; // revert
+        this.toastService.error('Failed to update status');
+      }
+    });
+  }
+
   deleteOrder(id: number, orderNumber: string): void {
     if (!confirm(`Delete order "${orderNumber}"?\n\nThis will permanently remove the order record.`)) return;
 

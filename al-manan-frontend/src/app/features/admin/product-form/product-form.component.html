@@ -70,31 +70,57 @@
         <span class="form-error" *ngIf="fieldError('categoryId')">Required</span>
       </div>
 
-      <!-- Image URL -->
+      <!-- Image Upload -->
       <div class="form-group form-group--full">
-        <label class="form-label">Product Image URL</label>
-        <div style="display:flex;gap:1rem;align-items:flex-start">
-          <div style="flex:1">
-            <input type="url" formControlName="imageUrl" class="form-control"
-                   placeholder="https://images.unsplash.com/photo-xxx or any image URL"
-                   (input)="onImageUrlChange($any($event.target).value)" />
-            <span class="form-hint" style="font-size:0.72rem;color:var(--color-text-muted)">
-              Paste any image URL — Unsplash, Google Images, etc.
-            </span>
+        <label class="form-label">Product Image</label>
+
+        <!-- Tab: URL or Upload -->
+        <div style="display:flex;gap:0.5rem;margin-bottom:0.75rem">
+          <button type="button" class="btn btn--sm"
+                  [class.btn--primary]="imageMode==='url'"
+                  [class.btn--ghost]="imageMode!=='url'"
+                  (click)="imageMode='url'">Image URL</button>
+          <button type="button" class="btn btn--sm"
+                  [class.btn--primary]="imageMode==='upload'"
+                  [class.btn--ghost]="imageMode!=='upload'"
+                  (click)="imageMode='upload'">Upload File</button>
+        </div>
+
+        <!-- URL mode -->
+        <div *ngIf="imageMode==='url'">
+          <input type="url" formControlName="imageUrl" class="form-control"
+                 placeholder="https://example.com/image.jpg"
+                 (input)="onImageUrlChange($any($event.target).value)" />
+          <span style="font-size:0.72rem;color:var(--color-text-muted)">
+            Paste any image URL — Unsplash, Pinterest, etc.
+          </span>
+        </div>
+
+        <!-- Upload mode -->
+        <div *ngIf="imageMode==='upload'">
+          <div class="img-upload-area"
+               (click)="fileInput.click()"
+               (dragover)="$event.preventDefault()"
+               (drop)="onFileDrop($event)">
+            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
+            </svg>
+            <p>Click to upload or drag & drop</p>
+            <span>PNG, JPG, WEBP up to 5MB</span>
           </div>
-          <!-- Image preview -->
-          <div *ngIf="imagePreview" style="width:80px;height:100px;border-radius:8px;overflow:hidden;
-               border:1px solid var(--color-border-light);flex-shrink:0">
-            <img [src]="imagePreview" alt="Preview"
-                 style="width:100%;height:100%;object-fit:cover"
-                 (error)="imagePreview = null" />
+          <input #fileInput type="file" accept="image/*" style="display:none"
+                 (change)="onFileSelect($event)" />
+          <div *ngIf="isUploading" style="margin-top:0.5rem;font-size:0.8rem;color:#B8952A">
+            Uploading...
           </div>
-          <div *ngIf="!imagePreview"
-               style="width:80px;height:100px;border-radius:8px;
-               border:1px dashed var(--color-border-light);flex-shrink:0;
-               display:flex;align-items:center;justify-content:center;
-               color:var(--color-text-muted);font-size:0.7rem;text-align:center">
-            Preview
+        </div>
+
+        <!-- Preview -->
+        <div *ngIf="imagePreview" class="img-preview-grid" style="margin-top:0.75rem">
+          <div class="img-preview-item">
+            <img [src]="imagePreview" alt="Preview" />
+            <button type="button" class="img-preview-item__remove"
+                    (click)="imagePreview=null; form.get('imageUrl')?.setValue('')">×</button>
           </div>
         </div>
       </div>

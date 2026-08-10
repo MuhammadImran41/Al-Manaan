@@ -25,10 +25,23 @@
           <tr *ngFor="let o of orders">
             <td><strong>{{ o.orderNumber }}</strong></td>
             <td class="text-muted">{{ o.createdAt | date:'mediumDate' }}</td>
-            <td class="text-muted">{{ o.shippingAddress?.fullName || '—' }}</td>
+            <td class="text-muted">{{ o.shippingAddress?.fullName || 'Guest' }}</td>
             <td><strong class="text-primary">PKR {{ o.totalAmount | number:'1.0-0' }}</strong></td>
             <td>{{ o.paymentStatus }}</td>
-            <td><span class="badge" [ngClass]="statusClass(o.status)">{{ o.status }}</span></td>
+            <td>
+              <!-- Status dropdown — change directly from list -->
+              <select class="status-select"
+                      [ngClass]="statusClass(o.status)"
+                      [value]="o.status"
+                      (change)="updateStatus(o, $any($event.target).value)">
+                <option value="Pending">Pending</option>
+                <option value="Confirmed">Confirmed</option>
+                <option value="Processing">Processing</option>
+                <option value="Shipped">Shipped</option>
+                <option value="Delivered">Delivered</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </td>
             <td>
               <div class="admin-table__actions">
                 <a [routerLink]="['/admin/orders', o.id]" class="btn btn--outline btn--sm">Detail</a>
