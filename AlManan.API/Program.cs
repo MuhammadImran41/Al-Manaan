@@ -78,19 +78,35 @@ if (hasDb)
         }
 
         // Seed default admin user
-        const string adminEmail = "admin@almanan.com";
+        const string adminEmail = "almananshop@gmail.com";
         if (await userManager.FindByEmailAsync(adminEmail) == null)
         {
             var admin = new AppUser
             {
-                FirstName = "Al-Manan",
-                LastName = "Admin",
+                FirstName   = "Al-Manan",
+                LastName    = "Admin",
                 DisplayName = "Admin",
-                Email = adminEmail,
-                UserName = adminEmail
+                Email       = adminEmail,
+                UserName    = adminEmail
             };
             await userManager.CreateAsync(admin, "Admin@123");
             await userManager.AddToRoleAsync(admin, "Admin");
+        }
+
+        // Also keep old admin@almanan.com for backward compat
+        const string oldAdmin = "admin@almanan.com";
+        if (await userManager.FindByEmailAsync(oldAdmin) == null)
+        {
+            var admin2 = new AppUser
+            {
+                FirstName   = "Al-Manan",
+                LastName    = "Admin",
+                DisplayName = "Admin",
+                Email       = oldAdmin,
+                UserName    = oldAdmin
+            };
+            await userManager.CreateAsync(admin2, "Admin@123");
+            await userManager.AddToRoleAsync(admin2, "Admin");
         }
     }
     catch (Exception ex)
