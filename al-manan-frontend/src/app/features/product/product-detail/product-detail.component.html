@@ -181,8 +181,19 @@
         </button>
 
         <!-- Fabric/Care note -->
-        <div class="product-detail__meta" *ngIf="product.fabric">
-          <div class="product-detail__meta-item">
+        <div class="product-detail__meta" *ngIf="product.fabric || product.stitchType">
+          <!-- Stitch Type badge -->
+          <div class="product-detail__meta-item" *ngIf="product.stitchType">
+            <span class="product-detail__meta-label">Type</span>
+            <span style="display:inline-flex;align-items:center;gap:6px">
+              <span style="background:rgba(184,149,42,0.15);color:#D4A843;
+                           padding:2px 10px;border-radius:99px;font-size:0.72rem;
+                           font-weight:700;letter-spacing:0.08em;border:1px solid rgba(184,149,42,0.3)">
+                {{ product.stitchType }}
+              </span>
+            </span>
+          </div>
+          <div class="product-detail__meta-item" *ngIf="product.fabric">
             <span class="product-detail__meta-label">Fabric</span>
             <span>{{ product.fabric }}</span>
           </div>

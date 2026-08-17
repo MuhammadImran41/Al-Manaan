@@ -88,6 +88,7 @@ export class ProductFormComponent implements OnInit {
       categoryId:       [null, Validators.required],
       fabric:           [''],
       care:             [''],
+      stitchType:       ['Unstitched'],
       imageUrl:         [''],
       imageUrl2:        [''],
       isFeatured:       [false],

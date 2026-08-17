@@ -19,6 +19,7 @@ public class ProductDto
     public bool IsNew { get; set; }
     public string? Fabric { get; set; }
     public string? Care { get; set; }
+    public string StitchType { get; set; } = "Unstitched";
     public double AverageRating { get; set; }
     public int ReviewCount { get; set; }
     public int CategoryId { get; set; }
@@ -59,6 +60,7 @@ public class ProductCreateDto
     public bool IsNew { get; set; } = true;
     public string? Fabric { get; set; }
     public string? Care { get; set; }
+    public string StitchType { get; set; } = "Unstitched";
 
     [Required]
     public int CategoryId { get; set; }

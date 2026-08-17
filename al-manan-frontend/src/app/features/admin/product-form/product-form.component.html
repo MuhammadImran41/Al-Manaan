@@ -205,6 +205,19 @@
         <span class="form-error" *ngIf="fieldError('description')">Required</span>
       </div>
 
+      <!-- Stitch Type -->
+      <div class="form-group">
+        <label class="form-label">Stitch Type *</label>
+        <select formControlName="stitchType" class="form-control">
+          <option value="Unstitched">Unstitched (Kapra only)</option>
+          <option value="Stitched">Stitched (Ready to wear)</option>
+          <option value="Both">Both Available</option>
+        </select>
+        <span style="font-size:0.72rem;color:#7A6F62">
+          Stitched = tayyar kapra | Unstitched = sirf kapra
+        </span>
+      </div>
+
       <!-- Fabric -->
       <div class="form-group">
         <label class="form-label">Fabric</label>

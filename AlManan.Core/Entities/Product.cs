@@ -19,6 +19,7 @@ public class Product : BaseEntity
     public bool IsNew { get; set; } = true;
     public string? Fabric { get; set; }
     public string? Care { get; set; }
+    public string StitchType { get; set; } = "Unstitched"; // Stitched / Unstitched / Both
     public double AverageRating { get; set; } = 0;
     public int ReviewCount { get; set; } = 0;
 
