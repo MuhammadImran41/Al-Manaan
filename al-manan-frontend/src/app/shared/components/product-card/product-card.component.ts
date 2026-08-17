@@ -18,7 +18,6 @@ export class ProductCardComponent implements AfterViewInit {
 
   isWishlisted = false;
   isAddingToCart = false;
-  isHovered = false;
 
   constructor(
     private guestCart: GuestCartService,

@@ -26,14 +26,25 @@
   &__image {
     width: 100%; height: 100%;
     object-fit: cover; object-position: top center;
-    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.4s ease;
+    transition: transform 0.6s cubic-bezier(0.4,0,0.2,1), opacity 0.45s ease;
     position: absolute; top: 0; left: 0;
 
-    &--main   { opacity: 1; z-index: 1; }
-    &--hover  { opacity: 0; z-index: 2; }
-    &--hidden  { opacity: 0; transform: scale(1.05); }
-    &--visible { opacity: 1; transform: scale(1.03); }
+    // Main image — always visible, hides on hover when hover image exists
+    &--main {
+      opacity: 1;
+      z-index: 1;
+    }
+
+    // Hover image — invisible by default, shows on card hover
+    &--hover {
+      opacity: 0;
+      z-index: 2;
+    }
   }
+
+  // When card is hovered — swap images via pure CSS
+  &:hover &__image--main  { opacity: 0; transform: scale(1.04); }
+  &:hover &__image--hover { opacity: 1; transform: scale(1.03); }
 
   &__badges {
     position: absolute; top: 8px; left: 8px;

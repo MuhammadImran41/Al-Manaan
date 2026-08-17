@@ -1,7 +1,5 @@
 ﻿<article class="product-card" #cardEl
-         (click)="navigateToProduct()"
-         (mouseenter)="isHovered=true"
-         (mouseleave)="isHovered=false">
+         (click)="navigateToProduct()">
 
   <!-- Image -->
   <div class="product-card__image-wrap">
@@ -10,17 +8,15 @@
       [src]="mainImageUrl"
       [alt]="product.name"
       class="product-card__image product-card__image--main"
-      [class.product-card__image--hidden]="isHovered && hoverImageUrl"
       loading="lazy"
       (error)="onImgError($event)"
     />
-    <!-- Hover image (second image) -->
+    <!-- Hover image (second image) — shown on CSS hover -->
     <img
       *ngIf="hoverImageUrl"
       [src]="hoverImageUrl"
       [alt]="product.name + ' alternate'"
       class="product-card__image product-card__image--hover"
-      [class.product-card__image--visible]="isHovered && hoverImageUrl"
       loading="lazy"
       (error)="onImgError($event)"
     />
