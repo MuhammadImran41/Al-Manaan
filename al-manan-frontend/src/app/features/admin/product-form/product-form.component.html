@@ -59,16 +59,46 @@
         <input type="number" formControlName="stockQuantity" class="form-control" placeholder="50" />
       </div>
 
-      <!-- Category -->
-      <div class="form-group form-group--full">
-        <label class="form-label">Category *</label>
-        <select formControlName="categoryId" class="form-control"
-                [class.is-error]="fieldError('categoryId')">
-          <option [value]="null">Select category...</option>
-          <option *ngFor="let c of categories" [value]="c.id">{{ c.name }}</option>
+      <!-- Gender -->
+      <div class="form-group">
+        <label class="form-label">Gender *</label>
+        <select formControlName="gender" class="form-control"
+                [class.is-error]="fieldError('gender')"
+                (change)="onGenderChange($any($event.target).value)">
+          <option value="">Select gender...</option>
+          <option value="Women">Women</option>
+          <option value="Men">Men</option>
         </select>
-        <span class="form-error" *ngIf="fieldError('categoryId')">Required</span>
+        <span class="form-error" *ngIf="fieldError('gender')">Required</span>
       </div>
+
+      <!-- Sub Category (depends on gender) -->
+      <div class="form-group" *ngIf="selectedGender">
+        <label class="form-label">Sub Category</label>
+        <select formControlName="subCategory" class="form-control"
+                (change)="onSubCategoryChange($any($event.target).value)">
+          <option value="">Select sub category...</option>
+          <option *ngFor="let s of subCategories" [value]="s">{{ s }}</option>
+        </select>
+        <span style="font-size:0.72rem;color:#7A6F62">
+          {{ selectedGender === 'Women' ? 'e.g. Lawn Collection, Formal Wear' : 'e.g. Kurta Shalwar, Wash & Wear' }}
+        </span>
+      </div>
+
+      <!-- Fabric Type (depends on gender) -->
+      <div class="form-group" *ngIf="selectedGender">
+        <label class="form-label">Fabric Type</label>
+        <select formControlName="fabricType" class="form-control">
+          <option value="">Select fabric...</option>
+          <option *ngFor="let f of fabricTypes" [value]="f">{{ f }}</option>
+        </select>
+        <span style="font-size:0.72rem;color:#7A6F62">
+          {{ selectedGender === 'Women' ? 'e.g. Lawn, Chiffon, Silk' : 'e.g. Wash & Wear, Cotton, Khaddar' }}
+        </span>
+      </div>
+
+      <!-- Hidden categoryId (auto-set from gender/subcategory) -->
+      <input type="hidden" formControlName="categoryId" />
 
       <!-- Image 1 (Main) -->
       <div class="form-group form-group--full">
@@ -218,11 +248,11 @@
         </span>
       </div>
 
-      <!-- Fabric -->
+      <!-- Fabric (manual override) -->
       <div class="form-group">
-        <label class="form-label">Fabric</label>
+        <label class="form-label">Fabric Detail <span style="color:#B0A899;font-size:0.7rem">(optional override)</span></label>
         <input type="text" formControlName="fabric" class="form-control"
-               placeholder="e.g. Pure Cotton, Chiffon" />
+               placeholder="e.g. Pure Egyptian Cotton, 3-piece Lawn" />
       </div>
 
       <!-- Care -->
