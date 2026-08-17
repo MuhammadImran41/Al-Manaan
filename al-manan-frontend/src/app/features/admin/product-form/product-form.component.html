@@ -75,11 +75,20 @@
       <!-- Sub Category (depends on gender) -->
       <div class="form-group" *ngIf="selectedGender">
         <label class="form-label">Sub Category</label>
-        <select formControlName="subCategory" class="form-control"
-                (change)="onSubCategoryChange($any($event.target).value)">
+        <select class="form-control"
+                (change)="onSubCatSelect($any($event.target).value)">
           <option value="">Select sub category...</option>
           <option *ngFor="let s of subCategories" [value]="s">{{ s }}</option>
+          <option value="__custom__">+ Add custom...</option>
         </select>
+        <!-- Custom input -->
+        <input *ngIf="showCustomSubCat"
+               type="text" formControlName="subCategory" class="form-control"
+               style="margin-top:0.5rem"
+               placeholder="Type your sub category..."
+               (blur)="onSubCategoryChange(form.get('subCategory')?.value)" />
+        <input *ngIf="!showCustomSubCat"
+               type="hidden" formControlName="subCategory" />
         <span style="font-size:0.72rem;color:#7A6F62">
           {{ selectedGender === 'Women' ? 'e.g. Lawn Collection, Formal Wear' : 'e.g. Kurta Shalwar, Wash & Wear' }}
         </span>
@@ -88,10 +97,19 @@
       <!-- Fabric Type (depends on gender) -->
       <div class="form-group" *ngIf="selectedGender">
         <label class="form-label">Fabric Type</label>
-        <select formControlName="fabricType" class="form-control">
+        <select class="form-control"
+                (change)="onFabricTypeSelect($any($event.target).value)">
           <option value="">Select fabric...</option>
           <option *ngFor="let f of fabricTypes" [value]="f">{{ f }}</option>
+          <option value="__custom__">+ Add custom...</option>
         </select>
+        <!-- Custom input -->
+        <input *ngIf="showCustomFabric"
+               type="text" formControlName="fabricType" class="form-control"
+               style="margin-top:0.5rem"
+               placeholder="Type your fabric type..." />
+        <input *ngIf="!showCustomFabric"
+               type="hidden" formControlName="fabricType" />
         <span style="font-size:0.72rem;color:#7A6F62">
           {{ selectedGender === 'Women' ? 'e.g. Lawn, Chiffon, Silk' : 'e.g. Wash & Wear, Cotton, Khaddar' }}
         </span>

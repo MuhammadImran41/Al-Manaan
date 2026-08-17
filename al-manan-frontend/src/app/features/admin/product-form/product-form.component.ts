@@ -81,6 +81,8 @@ export class ProductFormComponent implements OnInit {
   selectedGender: 'Women' | 'Men' | '' = '';
   subCategories: string[] = [];
   fabricTypes:   string[] = [];
+  showCustomSubCat = false;
+  showCustomFabric = false;
 
   // Image 1
   imagePreview:  string | null = null;
@@ -167,17 +169,41 @@ export class ProductFormComponent implements OnInit {
 
   // ── Gender change → update subcategory + fabric lists + reset categoryId ──
   onGenderChange(gender: 'Women' | 'Men'): void {
-    this.selectedGender = gender;
-    this.subCategories  = SUBCATEGORIES[gender] || [];
-    this.fabricTypes    = FABRIC_TYPES[gender]  || [];
+    this.selectedGender    = gender;
+    this.subCategories     = SUBCATEGORIES[gender] || [];
+    this.fabricTypes       = FABRIC_TYPES[gender]  || [];
+    this.showCustomSubCat  = false;
+    this.showCustomFabric  = false;
     this.form.get('subCategory')?.setValue('');
     this.form.get('fabricType')?.setValue('');
 
-    // Auto-select matching categoryId from DB
     const match = this.allCategories.find(
       c => c.gender === gender && !c.parentCategoryId
     );
     if (match) this.form.get('categoryId')?.setValue(match.id);
+  }
+
+  // ── Sub-category select ──
+  onSubCatSelect(value: string): void {
+    if (value === '__custom__') {
+      this.showCustomSubCat = true;
+      this.form.get('subCategory')?.setValue('');
+    } else {
+      this.showCustomSubCat = false;
+      this.form.get('subCategory')?.setValue(value);
+      this.onSubCategoryChange(value);
+    }
+  }
+
+  // ── Fabric type select ──
+  onFabricTypeSelect(value: string): void {
+    if (value === '__custom__') {
+      this.showCustomFabric = true;
+      this.form.get('fabricType')?.setValue('');
+    } else {
+      this.showCustomFabric = false;
+      this.form.get('fabricType')?.setValue(value);
+    }
   }
 
   // ── Sub-category change → try to match DB category ──
