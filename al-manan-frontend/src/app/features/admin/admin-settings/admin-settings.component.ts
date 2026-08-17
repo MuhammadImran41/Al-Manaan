@@ -89,16 +89,49 @@ export class AdminSettingsComponent implements OnInit {
   }
 
   saveAccount(): void {
-    if (this.accountForm.get('newPassword')?.value !==
-        this.accountForm.get('confirmPassword')?.value) {
+    if (this.accountForm.get('newPassword')?.value &&
+        this.accountForm.get('newPassword')?.value !== this.accountForm.get('confirmPassword')?.value) {
       this.toastService.error('Passwords do not match');
       return;
     }
     this.isSaving = true;
-    setTimeout(() => {
-      this.toastService.success('Account updated!');
-      this.isSaving = false;
-    }, 600);
+
+    const firstName = this.accountForm.get('firstName')?.value;
+    const lastName  = this.accountForm.get('lastName')?.value;
+    const currentPw = this.accountForm.get('currentPassword')?.value;
+    const newPw     = this.accountForm.get('newPassword')?.value;
+
+    // Update profile name
+    this.http.put(`${environment.apiUrl}/auth/profile`, { firstName, lastName }).subscribe({
+      next: () => {
+        // Change password if provided
+        if (currentPw && newPw) {
+          this.http.post(`${environment.apiUrl}/auth/change-password`, {
+            currentPassword: currentPw,
+            newPassword: newPw
+          }).subscribe({
+            next: () => {
+              this.toastService.success('Account & password updated!');
+              this.isSaving = false;
+              // Clear password fields
+              this.accountForm.patchValue({ currentPassword: '', newPassword: '', confirmPassword: '' });
+            },
+            error: (e) => {
+              this.isSaving = false;
+              const msg = e?.error?.message || 'Password change failed';
+              this.toastService.error(msg);
+            }
+          });
+        } else {
+          this.toastService.success('Profile updated!');
+          this.isSaving = false;
+        }
+      },
+      error: () => {
+        this.isSaving = false;
+        this.toastService.error('Failed to update profile');
+      }
+    });
   }
 
   logout(): void {

@@ -124,4 +124,37 @@ public class AuthController : BaseApiController
     {
         return await _userManager.FindByEmailAsync(email) != null;
     }
+
+    /// <summary>Change password for logged-in user</summary>
+    [Authorize]
+    [HttpPost("change-password")]
+    public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        var user  = await _userManager.FindByEmailAsync(email!);
+        if (user == null) return Unauthorized();
+
+        var result = await _userManager.ChangePasswordAsync(user, dto.CurrentPassword, dto.NewPassword);
+        if (!result.Succeeded)
+            return BadRequest(new { message = string.Join(", ", result.Errors.Select(e => e.Description)) });
+
+        return Ok(new { message = "Password changed successfully" });
+    }
+
+    /// <summary>Update profile (display name) for logged-in user</summary>
+    [Authorize]
+    [HttpPut("profile")]
+    public async Task<ActionResult> UpdateProfile([FromBody] UpdateProfileDto dto)
+    {
+        var email = User.FindFirstValue(ClaimTypes.Email);
+        var user  = await _userManager.FindByEmailAsync(email!);
+        if (user == null) return Unauthorized();
+
+        user.FirstName   = dto.FirstName;
+        user.LastName    = dto.LastName;
+        user.DisplayName = $"{dto.FirstName} {dto.LastName}";
+
+        await _userManager.UpdateAsync(user);
+        return Ok(new { message = "Profile updated" });
+    }
 }

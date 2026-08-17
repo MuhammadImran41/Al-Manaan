@@ -45,3 +45,24 @@ public class UserResponseDto
     public string Token { get; set; } = string.Empty;
     public IList<string> Roles { get; set; } = new List<string>();
 }
+
+public class ChangePasswordDto
+{
+    [Required]
+    public string CurrentPassword { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(100, MinimumLength = 6)]
+    public string NewPassword { get; set; } = string.Empty;
+}
+
+public class UpdateProfileDto
+{
+    [Required]
+    [StringLength(50)]
+    public string FirstName { get; set; } = string.Empty;
+
+    [Required]
+    [StringLength(50)]
+    public string LastName { get; set; } = string.Empty;
+}
