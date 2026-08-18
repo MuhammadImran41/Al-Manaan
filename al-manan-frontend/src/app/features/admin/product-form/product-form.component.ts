@@ -326,7 +326,19 @@ export class ProductFormComponent implements OnInit {
 
   private onError(e: any): void {
     this.isSaving = false;
-    this.toastService.error(e?.error?.message || e?.error?.title || 'Failed to save product');
+    console.error('Product save error:', e);
+    console.error('Error body:', e?.error);
+    
+    let msg = 'Failed to save product';
+    if (e?.error?.message) msg = e.error.message;
+    else if (e?.error?.title) msg = e.error.title;
+    else if (e?.error?.errors) {
+      const errs = Object.entries(e.error.errors)
+        .map(([k, v]: any) => `${k}: ${Array.isArray(v) ? v.join(', ') : v}`)
+        .join(' | ');
+      msg = errs;
+    }
+    this.toastService.error(msg);
   }
 
   fieldError(f: string): boolean {
