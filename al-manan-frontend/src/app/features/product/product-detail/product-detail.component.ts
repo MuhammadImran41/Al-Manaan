@@ -94,22 +94,26 @@ export class ProductDetailComponent implements OnInit {
   }
 
   addToCart(): void {
-    if (!this.selectedSize) {
+    const isUnstitched = this.product?.stitchType === 'Unstitched';
+    const size = isUnstitched ? 'One Size' : this.selectedSize;
+    if (!isUnstitched && !this.selectedSize) {
       this.toastService.warning('Please select a size');
       return;
     }
     this.isAddingToCart = true;
-    this.guestCart.addItem(this.product!, this.selectedSize, this.quantity, this.selectedColor || undefined);
+    this.guestCart.addItem(this.product!, size, this.quantity, this.selectedColor || undefined);
     this.toastService.success(`${this.product!.name} added to cart!`);
     setTimeout(() => (this.isAddingToCart = false), 600);
   }
 
   addToCartAndCheckout(): void {
-    if (!this.selectedSize) {
+    const isUnstitched = this.product?.stitchType === 'Unstitched';
+    const size = isUnstitched ? 'One Size' : this.selectedSize;
+    if (!isUnstitched && !this.selectedSize) {
       this.toastService.warning('Please select a size first');
       return;
     }
-    this.guestCart.addItem(this.product!, this.selectedSize, this.quantity, this.selectedColor || undefined);
+    this.guestCart.addItem(this.product!, size, this.quantity, this.selectedColor || undefined);
     this.router.navigate(['/checkout']);
   }
 

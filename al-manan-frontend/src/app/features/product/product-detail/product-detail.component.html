@@ -1,4 +1,4 @@
-<div class="product-detail page-enter" *ngIf="!isLoading && product; else loadingTpl">
+﻿<div class="product-detail page-enter" *ngIf="!isLoading && product; else loadingTpl">
   <div class="container">
     <app-breadcrumb [items]="[
       { label: 'Home', path: '/' },
@@ -98,8 +98,9 @@
           </div>
         </div>
 
-        <!-- Size selector — agar variants hain to show, warna default sizes -->
-        <div class="product-detail__option">
+        <!-- Size selector — sirf Stitched ya Both ke liye -->
+        <div class="product-detail__option"
+             *ngIf="product?.stitchType !== 'Unstitched'">
           <div class="product-detail__option-label">
             <span>Size</span>
             <strong>{{ selectedSize || 'Select a size' }}</strong>
@@ -142,7 +143,7 @@
           <button
             class="btn btn--primary btn--lg"
             style="flex:1"
-            [disabled]="isAddingToCart || !selectedSize"
+            [disabled]="isAddingToCart || (product?.stitchType !== 'Unstitched' && !selectedSize)"
             (click)="addToCart()"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
@@ -171,7 +172,7 @@
         <button
           class="btn btn--buy-now btn--full btn--lg"
           style="margin-top:0.75rem"
-          [disabled]="!selectedSize"
+          [disabled]="product?.stitchType !== 'Unstitched' && !selectedSize"
           (click)="addToCartAndCheckout()"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
