@@ -57,10 +57,14 @@ public class MappingProfiles : Profile
 
     private static string GenerateSlug(string name)
     {
-        return name.ToLower()
+        var slug = name.ToLower()
             .Replace(" ", "-")
             .Replace("'", "")
             .Replace("\"", "")
-            .Replace("&", "and");
+            .Replace("&", "and")
+            .Replace(".", "")
+            .Replace(",", "");
+        // Add timestamp suffix to ensure uniqueness
+        return $"{slug}-{DateTimeOffset.UtcNow.ToUnixTimeSeconds().ToString().Substring(5)}";
     }
 }

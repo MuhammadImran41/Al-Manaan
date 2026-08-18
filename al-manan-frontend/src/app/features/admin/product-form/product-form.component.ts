@@ -293,7 +293,12 @@ export class ProductFormComponent implements OnInit {
     if (v.shortDescription?.trim()) payload.shortDescription = v.shortDescription.trim();
     if (v.fabric?.trim()) payload.fabric = v.fabric.trim();
     if (v.care?.trim()) payload.care = v.care.trim();
-    if (v.slug?.trim()) payload.slug = v.slug.trim();
+    // Auto-generate unique slug — add timestamp suffix to prevent duplicates
+    if (!payload.slug || payload.slug.trim() === '') {
+      const base = payload.name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      const ts   = Date.now().toString().slice(-6);
+      payload.slug = `${base}-${ts}`;
+    }
 
     // Fabrictype override
     if (!payload.fabric && v.fabricType?.trim()) payload.fabric = v.fabricType.trim();
