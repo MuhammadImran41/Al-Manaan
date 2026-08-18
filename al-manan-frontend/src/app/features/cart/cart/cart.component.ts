@@ -46,7 +46,7 @@ export class CartComponent implements OnInit, OnDestroy {
   }
 
   get subtotal(): number   { return this.cart?.subTotal ?? 0; }
-  get shippingCost(): number { return this.subtotal >= 3000 ? 0 : 200; }
+  get shippingCost(): number { return 250; }
   get total(): number      { return this.subtotal + this.shippingCost; }
   isUpdating(_: number): boolean { return false; }
 

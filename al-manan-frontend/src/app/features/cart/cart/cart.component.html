@@ -66,9 +66,7 @@
           <span *ngIf="shippingCost===0" class="text-primary">Free</span>
           <span *ngIf="shippingCost>0">PKR {{ shippingCost | number:'1.0-0' }}</span>
         </div>
-        <div class="cart-summary__line text-muted body-sm" *ngIf="shippingCost>0">
-          <span>Add PKR {{ (3000 - subtotal) | number:'1.0-0' }} for free shipping</span>
-        </div>
+        
         <div class="cart-summary__divider"></div>
         <div class="cart-summary__total">
           <span>Total</span>

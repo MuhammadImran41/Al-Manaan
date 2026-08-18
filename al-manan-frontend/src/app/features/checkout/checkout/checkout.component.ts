@@ -173,7 +173,7 @@ export class CheckoutComponent implements OnInit {
   get subtotal(): number {
     return this.cart?.items.reduce((s, i) => s + i.subTotal, 0) ?? 0;
   }
-  get shippingCost(): number { return this.subtotal >= 3000 ? 0 : 200; }
+  get shippingCost(): number { return 250; }
   get total(): number { return this.subtotal + this.shippingCost; }
   get totalItems(): number { return this.cart?.items.reduce((s,i) => s + i.quantity, 0) ?? 0; }
   fieldError(f: string): boolean {
