@@ -268,19 +268,22 @@ export class ProductFormComponent implements OnInit {
     if (!payload.salePrice) delete payload.salePrice;
     // Merge fabricType into fabric if set
     if (payload.fabricType && !payload.fabric) payload.fabric = payload.fabricType;
-    delete payload.imageUrl; delete payload.imageUrl2;
-    delete payload.gender; delete payload.subCategory; delete payload.fabricType;
 
-    // Remove null/undefined fields that API doesn't accept
+    // ALWAYS remove image URLs from main payload — saved separately after product creation
+    const img1 = payload.imageUrl;
+    const img2 = payload.imageUrl2;
+    delete payload.imageUrl;
+    delete payload.imageUrl2;
+    delete payload.gender;
+    delete payload.subCategory;
+    delete payload.fabricType;
+
+    // Remove null/undefined fields
     if (!payload.slug) delete payload.slug;
     if (!payload.shortDescription) delete payload.shortDescription;
     if (!payload.care) delete payload.care;
 
-    console.log('Submitting product:', JSON.stringify(payload));
-
     const apiUrl = `${environment.apiUrl}/products`;
-    const img1   = this.form.get('imageUrl')?.value;
-    const img2   = this.form.get('imageUrl2')?.value;
 
     if (this.isEdit && this.productId) {
       this.http.put(`${apiUrl}/${this.productId}`, payload).subscribe({
