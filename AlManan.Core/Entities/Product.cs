@@ -17,6 +17,7 @@ public class Product : BaseEntity
     public bool IsFeatured { get; set; } = false;
     public bool IsBestSeller { get; set; } = false;
     public bool IsNew { get; set; } = true;
+    public bool IsSoldOut { get; set; } = false;
     public string? Fabric { get; set; }
     public string? Care { get; set; }
     public string StitchType { get; set; } = "Unstitched"; // Stitched / Unstitched / Both

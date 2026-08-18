@@ -32,6 +32,7 @@ export interface Product {
   isNew: boolean;
   fabric?: string;
   care?: string;
+  isSoldOut?: boolean;
   stitchType?: string;
   averageRating: number;
   reviewCount: number;

@@ -23,9 +23,15 @@
 
     <!-- Badges -->
     <div class="product-card__badges">
-      <span class="badge badge--new" *ngIf="product.isNew">New</span>
-      <span class="badge badge--sale" *ngIf="product.salePrice">
+      <span class="badge badge--new" *ngIf="product.isNew && !product.isSoldOut">New</span>
+      <span class="badge badge--sale" *ngIf="product.salePrice && !product.isSoldOut">
         -{{ discountPercent }}%
+      </span>
+      <span *ngIf="product.isSoldOut"
+            style="background:#C0392B;color:#fff;font-size:0.6rem;font-weight:800;
+                   letter-spacing:0.12em;text-transform:uppercase;
+                   padding:4px 10px;border-radius:4px;">
+        SOLD OUT
       </span>
     </div>
 
@@ -91,9 +97,12 @@
   <!-- Bottom CTA — always aligned at bottom -->
   <button class="product-card__add-btn"
           (click)="addToCart($event)"
-          [class.loading]="isAddingToCart">
-    <span *ngIf="!isAddingToCart">Add to Cart</span>
-    <span *ngIf="isAddingToCart">Adding...</span>
+          [disabled]="isAddingToCart || !!product.isSoldOut"
+          [style.opacity]="product.isSoldOut ? '0.5' : '1'"
+          [style.cursor]="product.isSoldOut ? 'not-allowed' : 'pointer'">
+    <span *ngIf="product.isSoldOut">Sold Out</span>
+    <span *ngIf="!product.isSoldOut && !isAddingToCart">Add to Cart</span>
+    <span *ngIf="!product.isSoldOut && isAddingToCart">Adding...</span>
   </button>
 
 </article>

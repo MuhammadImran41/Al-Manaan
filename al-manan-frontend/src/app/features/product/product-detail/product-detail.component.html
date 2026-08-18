@@ -139,8 +139,18 @@
 
         <!-- Actions -->
         <div class="product-detail__actions">
-          <!-- Add to Cart -->
-          <button
+
+          <!-- Sold Out Banner -->
+          <div *ngIf="product?.isSoldOut"
+               style="width:100%;padding:1rem;background:rgba(192,57,43,0.12);
+                      border:1.5px solid #C0392B;border-radius:8px;
+                      text-align:center;color:#C0392B;font-weight:700;
+                      font-size:0.875rem;letter-spacing:0.1em;text-transform:uppercase">
+            This product is currently Sold Out
+          </div>
+
+          <!-- Add to Cart — hidden if sold out -->
+          <button *ngIf="!product?.isSoldOut"
             class="btn btn--primary btn--lg"
             style="flex:1"
             [disabled]="isAddingToCart || (product?.stitchType !== 'Unstitched' && !selectedSize)"
@@ -168,8 +178,8 @@
           </button>
         </div>
 
-        <!-- Buy Now / Checkout button -->
-        <button
+        <!-- Buy Now — hidden if sold out -->
+        <button *ngIf="!product?.isSoldOut"
           class="btn btn--buy-now btn--full btn--lg"
           style="margin-top:0.75rem"
           [disabled]="product?.stitchType !== 'Unstitched' && !selectedSize"

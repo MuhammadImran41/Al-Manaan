@@ -1,4 +1,4 @@
-using AlManan.Core.DTOs.Product;
+﻿using AlManan.Core.DTOs.Product;
 using AlManan.Core.Entities;
 using AlManan.Core.Helpers;
 using AlManan.Core.Interfaces;
@@ -206,6 +206,20 @@ public class ProductsController : BaseApiController
         await _productRepo.SaveChangesAsync();
 
         return Ok(new { image.Id, image.ImageUrl, image.IsMain });
+    }
+
+    /// <summary>Toggle sold out status (Admin only)</summary>
+    [Authorize(Policy = "AdminOnly")]
+    [HttpPatch("{id:int}/sold-out")]
+    public async Task<ActionResult> ToggleSoldOut(int id, [FromBody] SoldOutDto dto)
+    {
+        var product = await _productRepo.GetByIdAsync(id);
+        if (product == null) return NotFound(new { message = "Product not found" });
+        product.IsSoldOut = dto.IsSoldOut;
+        product.UpdatedAt = DateTime.UtcNow;
+        _productRepo.Update(product);
+        await _productRepo.SaveChangesAsync();
+        return Ok(new { product.Id, product.IsSoldOut });
     }
 
     /// <summary>Add product image by URL (Admin only)</summary>

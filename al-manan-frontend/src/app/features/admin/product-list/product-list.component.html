@@ -19,7 +19,7 @@
         <thead>
           <tr>
             <th>Image</th><th>Name</th><th>Category</th>
-            <th>Price</th><th>Stock</th><th>Featured</th><th>Status</th><th>Actions</th>
+            <th>Price</th><th>Stock</th><th>Featured</th><th>Status</th><th>Sold Out</th><th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -42,6 +42,16 @@
                 {{ p.isActive ? 'Active' : 'Draft' }}
               </span>
             </td>
+            <!-- Sold Out Toggle -->
+            <td>
+              <button class="btn btn--sm"
+                      [class.btn--delete]="!p.isSoldOut"
+                      [class.btn--outline]="p.isSoldOut"
+                      [style.minWidth]="'90px'"
+                      (click)="toggleSoldOut(p)">
+                {{ p.isSoldOut ? 'Mark In Stock' : 'Mark Sold Out' }}
+              </button>
+            </td>
             <td>
               <div class="admin-table__actions">
                 <a [routerLink]="['/admin/products', p.id, 'edit']" class="btn btn--outline btn--sm">Edit</a>
@@ -53,7 +63,7 @@
             </td>
           </tr>
           <tr *ngIf="products.length === 0">
-            <td colspan="8" style="text-align:center; padding:3rem; color:var(--color-text-muted)">No products found</td>
+            <td colspan="9" style="text-align:center; padding:3rem; color:var(--color-text-muted)">No products found</td>
           </tr>
         </tbody>
       </table>

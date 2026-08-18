@@ -17,6 +17,7 @@ public class ProductDto
     public bool IsFeatured { get; set; }
     public bool IsBestSeller { get; set; }
     public bool IsNew { get; set; }
+    public bool IsSoldOut { get; set; }
     public string? Fabric { get; set; }
     public string? Care { get; set; }
     public string StitchType { get; set; } = "Unstitched";
@@ -58,6 +59,7 @@ public class ProductCreateDto
     public bool IsFeatured { get; set; }
     public bool IsBestSeller { get; set; }
     public bool IsNew { get; set; } = true;
+    public bool IsSoldOut { get; set; } = false;
     public string? Fabric { get; set; }
     public string? Care { get; set; }
     public string StitchType { get; set; } = "Unstitched";

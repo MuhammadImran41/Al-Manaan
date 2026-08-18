@@ -62,5 +62,18 @@ export class ProductListComponent implements OnInit {
     });
   }
 
+  toggleSoldOut(product: Product): void {
+    const newVal = !product.isSoldOut;
+    this.http.patch(`${environment.apiUrl}/products/${product.id}/sold-out`, { isSoldOut: newVal }).subscribe({
+      next: () => {
+        product.isSoldOut = newVal;
+        this.toastService.success(
+          newVal ? `"${product.name}" marked as Sold Out` : `"${product.name}" is back In Stock`
+        );
+      },
+      error: () => this.toastService.error('Failed to update sold out status')
+    });
+  }
+
   get pages(): number[] { return Array.from({ length: this.totalPages }, (_, i) => i + 1); }
 }
