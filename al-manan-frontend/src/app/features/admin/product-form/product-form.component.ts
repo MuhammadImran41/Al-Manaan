@@ -289,9 +289,26 @@ export class ProductFormComponent implements OnInit {
     if (!payload.shortDescription) delete payload.shortDescription;
     if (!payload.care) delete payload.care;
 
-    // Ensure categoryId is a number
+    // Ensure numbers are numbers not strings
     if (payload.categoryId) payload.categoryId = Number(payload.categoryId);
-    
+    if (payload.price) payload.price = Number(payload.price);
+    if (payload.salePrice) payload.salePrice = Number(payload.salePrice);
+    if (payload.stockQuantity !== undefined) payload.stockQuantity = Number(payload.stockQuantity);
+
+    // Validate price
+    if (!payload.price || payload.price <= 0) {
+      this.toastService.error('Price must be greater than 0');
+      this.isSaving = false;
+      return;
+    }
+
+    // Validate categoryId
+    if (!payload.categoryId) {
+      this.toastService.error('Please select a Gender first');
+      this.isSaving = false;
+      return;
+    }
+
     console.log('Submitting payload:', JSON.stringify(payload));
 
     const apiUrl = `${environment.apiUrl}/products`;
