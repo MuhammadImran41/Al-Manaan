@@ -177,10 +177,16 @@ export class ProductFormComponent implements OnInit {
     this.form.get('subCategory')?.setValue('');
     this.form.get('fabricType')?.setValue('');
 
+    // Auto-select parent category from DB
     const match = this.allCategories.find(
       c => c.gender === gender && !c.parentCategoryId
     );
-    if (match) this.form.get('categoryId')?.setValue(match.id);
+    if (match) {
+      this.form.get('categoryId')?.setValue(match.id);
+    } else {
+      // Fallback: Women=1, Men=2 (from seed data)
+      this.form.get('categoryId')?.setValue(gender === 'Women' ? 1 : 2);
+    }
   }
 
   // ── Sub-category select ──
@@ -282,6 +288,11 @@ export class ProductFormComponent implements OnInit {
     if (!payload.slug) delete payload.slug;
     if (!payload.shortDescription) delete payload.shortDescription;
     if (!payload.care) delete payload.care;
+
+    // Ensure categoryId is a number
+    if (payload.categoryId) payload.categoryId = Number(payload.categoryId);
+    
+    console.log('Submitting payload:', JSON.stringify(payload));
 
     const apiUrl = `${environment.apiUrl}/products`;
 
