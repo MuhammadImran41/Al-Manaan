@@ -21,6 +21,17 @@ builder.Services.AddIdentityServices(builder.Configuration);
 builder.Services.AddControllers()
     .AddJsonOptions(opts =>
         opts.JsonSerializerOptions.PropertyNamingPolicy = System.Text.Json.JsonNamingPolicy.CamelCase);
+
+// Increase request body size limit for base64 image uploads (50MB)
+builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(o =>
+{
+    o.ValueLengthLimit = 52428800;
+    o.MultipartBodyLengthLimit = 52428800;
+});
+builder.WebHost.ConfigureKestrel(o =>
+{
+    o.Limits.MaxRequestBodySize = 52428800; // 50MB
+});
 builder.Services.AddEndpointsApiExplorer();
 
 // Swagger with JWT support
