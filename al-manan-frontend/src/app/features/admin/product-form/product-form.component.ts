@@ -270,46 +270,46 @@ export class ProductFormComponent implements OnInit {
     if (this.form.invalid) { this.form.markAllAsTouched(); return; }
     this.isSaving = true;
 
-    const payload = { ...this.form.value };
-    if (!payload.salePrice) delete payload.salePrice;
-    // Merge fabricType into fabric if set
-    if (payload.fabricType && !payload.fabric) payload.fabric = payload.fabricType;
+    const v = this.form.value;
 
-    // ALWAYS remove image URLs from main payload — saved separately after product creation
-    const img1 = payload.imageUrl;
-    const img2 = payload.imageUrl2;
-    delete payload.imageUrl;
-    delete payload.imageUrl2;
-    delete payload.gender;
-    delete payload.subCategory;
-    delete payload.fabricType;
+    // Build clean payload — only what API needs
+    const payload: any = {
+      name:          String(v.name || '').trim(),
+      description:   String(v.description || '').trim(),
+      price:         Number(v.price),
+      sku:           String(v.sku || '').trim(),
+      categoryId:    Number(v.categoryId),
+      stockQuantity: Number(v.stockQuantity || 0),
+      isFeatured:    Boolean(v.isFeatured),
+      isBestSeller:  Boolean(v.isBestSeller),
+      isNew:         Boolean(v.isNew),
+      isActive:      Boolean(v.isActive),
+      isSoldOut:     Boolean(v.isSoldOut),
+      stitchType:    String(v.stitchType || 'Unstitched'),
+    };
 
-    // Remove null/undefined fields
-    if (!payload.slug) delete payload.slug;
-    if (!payload.shortDescription) delete payload.shortDescription;
-    if (!payload.care) delete payload.care;
+    // Optional fields
+    if (v.salePrice && Number(v.salePrice) > 0) payload.salePrice = Number(v.salePrice);
+    if (v.shortDescription?.trim()) payload.shortDescription = v.shortDescription.trim();
+    if (v.fabric?.trim()) payload.fabric = v.fabric.trim();
+    if (v.care?.trim()) payload.care = v.care.trim();
+    if (v.slug?.trim()) payload.slug = v.slug.trim();
 
-    // Ensure numbers are numbers not strings
-    if (payload.categoryId) payload.categoryId = Number(payload.categoryId);
-    if (payload.price) payload.price = Number(payload.price);
-    if (payload.salePrice) payload.salePrice = Number(payload.salePrice);
-    if (payload.stockQuantity !== undefined) payload.stockQuantity = Number(payload.stockQuantity);
+    // Fabrictype override
+    if (!payload.fabric && v.fabricType?.trim()) payload.fabric = v.fabricType.trim();
 
-    // Validate price
-    if (!payload.price || payload.price <= 0) {
-      this.toastService.error('Price must be greater than 0');
-      this.isSaving = false;
-      return;
-    }
+    // Validations
+    if (!payload.name) { this.toastService.error('Product name required'); this.isSaving = false; return; }
+    if (!payload.description) { this.toastService.error('Description required'); this.isSaving = false; return; }
+    if (payload.price <= 0) { this.toastService.error('Price must be greater than 0'); this.isSaving = false; return; }
+    if (!payload.sku) { this.toastService.error('SKU required'); this.isSaving = false; return; }
+    if (!payload.categoryId || payload.categoryId === 0) { this.toastService.error('Please select Gender first'); this.isSaving = false; return; }
 
-    // Validate categoryId
-    if (!payload.categoryId) {
-      this.toastService.error('Please select a Gender first');
-      this.isSaving = false;
-      return;
-    }
+    // Images — stored separately
+    const img1 = v.imageUrl || '';
+    const img2 = v.imageUrl2 || '';
 
-    console.log('Submitting payload:', JSON.stringify(payload));
+    console.log('PAYLOAD:', JSON.stringify(payload));
 
     const apiUrl = `${environment.apiUrl}/products`;
 
